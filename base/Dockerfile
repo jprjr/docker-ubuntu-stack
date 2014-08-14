@@ -11,3 +11,5 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get clean && \
     mkdir -p /etc/s6/.s6-svscan && \
     ln -s /bin/true /etc/s6/.s6-svscan/finish
+
+ENTRYPOINT ["/usr/bin/s6-svscan","/etc/s6"]
