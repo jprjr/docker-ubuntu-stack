@@ -8,12 +8,12 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get -y install nginx && \
     rm -rf /etc/nginx/conf.d/* && \
     rm -rf /srv/www/* && \
-    mkdir /etc/s6/svc/nginx && \
-    touch /etc/s6/svc/nginx/finish && \
+    mkdir /etc/s6/nginx && \
+    ln -s /bin/true /etc/s6/nginx/finish && \
     userdel nginx
 
 ADD nginx.conf /etc/nginx/nginx.conf
-ADD nginx.run /etc/s6/svc/nginx/run
+ADD nginx.run /etc/s6/nginx/run
 ADD default.conf /etc/nginx/conf.d/default.conf
 ADD index.html /srv/www/index.html
 
