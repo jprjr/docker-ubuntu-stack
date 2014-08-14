@@ -13,3 +13,4 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     ln -s /bin/true /etc/s6/.s6-svscan/finish
 
 ENTRYPOINT ["/usr/bin/s6-svscan","/etc/s6"]
+CMD []
