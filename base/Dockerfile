@@ -9,4 +9,5 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get install -y openssl ca-certificates && \
     dpkg -i /tmp/logstash-forwarder_0.3.1_amd64.deb && \
     apt-get clean && \
-    mkdir -p /etc/s6/svc
+    mkdir -p /etc/s6/.s6-svscan && \
+    ln -s /bin/true /etc/s6/.s6-svscan/finish
