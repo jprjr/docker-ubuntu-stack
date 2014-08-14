@@ -16,7 +16,7 @@ summary:
   * Example: `/etc/s6/nginx`
 2. Make a script at `/etc/s6/<servicename>/run`
   * Example: `/etc/s6/nginx/run`
-  * Your `run` script should setup and launch your process.
+  * Your `run` script should setup and launch your process - attach to your process with `exec` and make sure it won't try to background/fork.
   * If your process doesn't need any arguments, you could just symlink
     the binary instead of writing a script.
 4. Make a script at `/etc/s6/<servicename>/finish`
