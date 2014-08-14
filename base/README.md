@@ -24,7 +24,7 @@ summary:
   * The finish script should clean up anything it needs to.
   * If you're lazy, just do `ln -sf /bin/true /etc/s6/<servicename>/finish`
 
-That's it! S6 will launch your service, monitor it, and relaunch it if it does.
+That's it! S6 will launch your service, monitor it, and relaunch it if it dies.
 
 ## Caveats
 
