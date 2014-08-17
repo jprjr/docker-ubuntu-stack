@@ -26,9 +26,9 @@ Then I also try to setup the database (more details below, under "Environment Va
 
 ## Needed Volumes
 
-`/srv/mail` - Used for storing mail
-`/etc/dovecot` - Used for storing the dovecot configuration.
-`/srv/ssl` - Used for reading in the SSL cert and key you want to use
+* `/srv/mail` - Used for storing mail
+* `/etc/dovecot` - Used for storing the dovecot configuration.
+* `/srv/ssl` - Used for reading in the SSL cert and key you want to use
 
 ## Ports
 
