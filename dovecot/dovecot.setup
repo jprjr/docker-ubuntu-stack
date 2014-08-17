@@ -1,0 +1,107 @@
+#!/usr/bin/env bash
+
+env
+
+# Environment variables
+declare MYSQL_HOST #optional
+declare MYSQL_USER #optional
+declare MYSQL_PASS #optional
+
+declare DOVECOT_SQL_USER #requireed if using mysql
+declare DOVECOT_SQL_PASS #required if using mysql
+
+declare SPAMASSASSIN_HOST
+
+declare ADMIN_EMAIL
+
+declare SKIP_DB_SETUP
+
+# logic:
+# if linked to a host named 'mysql' OR MYSQL_HOST is defined
+# then store users in a mysqldb
+
+# if MYSQL_USER and MYSQL_PASS is defined, setup a dovecot user/pass
+# and db
+
+# if DOVECOT_SQL_USER + PASS is defined, use those to setup tables
+
+# lastly, if SKIP_DB_SETUP=1 none of this happens.
+
+
+shopt -s nullglob
+shopt -s dotglob
+
+declare need_setup_dovecot
+declare need_setup_mailfolders
+
+dovecot_files=(/etc/dovecot/*)
+(( ${#dovecot_files[*]} )) && need_setup_dovecot=0 || need_setup_dovecot=1
+
+mail_files=(/srv/mail/*)
+(( ${#mail_files[*]} )) && need_setup_mailfolders=0 || need_setup_mailfolders=1
+
+shopt -u nullglob
+shopt -u dotglob
+
+if [[ $need_setup_dovecot -eq 1 ]]; then
+    rsync -a /opt/dovecot.default/ /etc/dovecot/
+    sievec /etc/dovecot/sieve-spam.sieve
+
+    if [[ -z $SKIP_DB_SETUP ]]; then
+        # first check for MYSQL_HOST
+        MYSQL_HOST=${MYSQL_HOST:-}
+        if [[ -z $MYSQL_HOST ]]; then
+            MYSQL_HOST=${MYSQL_NAME:-}
+            if [[ -n $MYSQL_NAME ]]; then
+                # MYSQL_NAME appears when there's a linked
+                # container named 'mysql'
+                MYSQL_HOST=mysql
+            fi
+        fi
+
+        if [[ -n $MYSQL_HOST ]]; then
+            MYSQL_USER=${MYSQL_USER:-}
+            MYSQL_PASS=${MYSQL_PASS:-}
+
+            if [[ -n ${MYSQL_USER} && -n ${MYSQL_PASS} ]]; then
+                mysql -h $MYSQL_HOST -u$MYSQL_USER -p$MYSQL_PASS -e "CREATE DATABASE IF NOT EXISTS $DOVECOT_SQL_USER;"
+                mysql -h $MYSQL_HOST -u$MYSQL_USER -p$MYSQL_PASS -e "GRANT ALL ON $DOVECOT_SQL_USER.* TO '$DOVECOT_SQL_USER'@'%' IDENTIFIED BY '$DOVECOT_SQL_PASS';"
+            fi
+            mysql -h $MYSQL_HOST -u$DOVECOT_SQL_USER -p$DOVECOT_SQL_PASS -e "CREATE TABLE IF NOT EXISTS users (id INTEGER AUTO_INCREMENT, email VARCHAR(254) NOT NULL UNIQUE, password TEXT NOT NULL, PRIMARY KEY (id) );" $DOVECOT_SQL_USER
+            mysql -h $MYSQL_HOST -u$DOVECOT_SQL_USER -p$DOVECOT_SQL_PASS -e "CREATE TABLE IF NOT EXISTS aliases (id INTEGER AUTO_INCREMENT, source VARCHAR(254) NOT NULL UNIQUE, destination VARCHAR(254) NOT NULL, PRIMARY KEY (id) );" $DOVECOT_SQL_USER
+        fi
+
+        sed -i "s/#*\(\!include auth-system.conf.ext\)/#\1/"  /etc/dovecot/conf.d/10-auth.conf
+        sed -i "s/#\(\!include auth-sql.conf.ext\)/\1/"  /etc/dovecot/conf.d/10-auth.conf
+        sed -i "s/##MYSQL_HOST##/$MYSQL_HOST/g" /etc/dovecot/dovecot-sql.conf.ext
+        sed -i "s/##DOVECOT_SQL_USER##/$DOVECOT_SQL_USER/g" /etc/dovecot/dovecot-sql.conf.ext
+        sed -i "s/##DOVECOT_SQL_PASS##/$DOVECOT_SQL_PASS/g" /etc/dovecot/dovecot-sql.conf.ext
+        chmod 0600 /etc/dovecot/dovecot-sql.conf.ext
+
+    fi
+
+    sed -i "s/##ADMIN_EMAIL##/$ADMIN_EMAIL/g" /etc/dovecot/conf.d/15-lda.conf
+
+    SPAMASSASSIN_HOST=${SPAMASSASSIN_HOST:-}
+    if [[ -z $SPAMASSASSIN_HOST ]]; then
+        SPAMASSASSIN_HOST=${SPAMASSASSIN_NAME:-spamassassin}
+    fi
+    sed -i "s/##SPAMASSASSIN_HOST##/$SPAMASSASSIN_HOST/g" /etc/dovecot/conf.d/99-learn-spam.conf
+
+    chown -R mail:dovecot /etc/dovecot
+    chmod -R o-rwx /etc/dovecot
+
+fi
+
+if [[ $need_setup_mailfolders -eq 1 ]]; then
+    mkdir -p /srv/mail/mailboxes
+    mkdir -p /srv/mail/sieve
+    mkdir -p /srv/mail/ssl
+    chown -R mail:mail /srv/mail/*
+fi
+
+cp /srv/ssl/* /srv/mail/ssl/
+chown -R mail:mail /srv/mail/ssl
+
+chmod g-rwx /srv/mail/ssl/*
+chmod o-rwx /srv/mail/ssl/*
