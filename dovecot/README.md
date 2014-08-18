@@ -46,13 +46,12 @@ Then I also try to setup the database (more details below, under "Environment Va
 * `MYSQL_PASS`
 * `DOVECOT_SQL_USER`
 * `DOVECOT_SQL_PASS`
-* `SPAMASSASSIN_HOST`
 * `ADMIN_EMAIL`
 * `SKIP_DB_SETUP`
 
 ### Details on each variable
 
-* `MYSQL_HOST` - use this to specify your MySQL server. This will be overridden if you link a container and name it `mysql`
+* `MYSQL_HOST` - use this to specify your MySQL server.
 * `MYSQL_USER` - use this to specify your root MySQL user (optional)
 * `MYSQL_PASS` - use this to specify your root MySQL password (optional)
 
@@ -67,8 +66,6 @@ database for dovecot. If these are blank, I skip that step.
 
 These drive what database name to use, as well as a username and password
 for that database. These are required variables.
-
-* `SPAMASSASSIN_HOST` - use this to specify your SpamAssassin host. This will be overridden if you link a container and name it `spamassassin`
 
 * `ADMIN_EMAIL` - This is for creating a "postmaster" email address.
 

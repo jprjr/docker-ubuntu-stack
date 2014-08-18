@@ -50,14 +50,6 @@ if [[ $need_setup_dovecot -eq 1 ]]; then
     if [[ -z $SKIP_DB_SETUP ]]; then
         # first check for MYSQL_HOST
         MYSQL_HOST=${MYSQL_HOST:-}
-        if [[ -z $MYSQL_HOST ]]; then
-            MYSQL_HOST=${MYSQL_NAME:-}
-            if [[ -n $MYSQL_NAME ]]; then
-                # MYSQL_NAME appears when there's a linked
-                # container named 'mysql'
-                MYSQL_HOST=mysql
-            fi
-        fi
 
         if [[ -n $MYSQL_HOST ]]; then
             MYSQL_USER=${MYSQL_USER:-}
@@ -82,12 +74,6 @@ if [[ $need_setup_dovecot -eq 1 ]]; then
 
     sed -i "s/##ADMIN_EMAIL##/$ADMIN_EMAIL/g" /etc/dovecot/conf.d/15-lda.conf
 
-    SPAMASSASSIN_HOST=${SPAMASSASSIN_HOST:-}
-    if [[ -z $SPAMASSASSIN_HOST ]]; then
-        SPAMASSASSIN_HOST=${SPAMASSASSIN_NAME:-spamassassin}
-    fi
-    sed -i "s/##SPAMASSASSIN_HOST##/$SPAMASSASSIN_HOST/g" /etc/dovecot/conf.d/99-learn-spam.conf
-
     chown -R mail:dovecot /etc/dovecot
     chmod -R o-rwx /etc/dovecot
 
@@ -96,12 +82,5 @@ fi
 if [[ $need_setup_mailfolders -eq 1 ]]; then
     mkdir -p /srv/mail/mailboxes
     mkdir -p /srv/mail/sieve
-    mkdir -p /srv/mail/ssl
     chown -R mail:mail /srv/mail/*
 fi
-
-cp /srv/ssl/* /srv/mail/ssl/
-chown -R mail:mail /srv/mail/ssl
-
-chmod g-rwx /srv/mail/ssl/*
-chmod o-rwx /srv/mail/ssl/*
