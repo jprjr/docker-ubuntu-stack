@@ -7,13 +7,15 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get -y install mongodb-org
 
-#ADD nginx.conf /etc/nginx/nginx.conf
-#ADD nginx.run /etc/s6/nginx/run
-#ADD default.conf /etc/nginx/conf.d/default.conf
-#ADD index.html /srv/www/index.html
+RUN mkdir -p /etc/s6/mongodb && \
+    ln -s /bin/true /etc/s6/mongodb/finish && \
+    mkdir -p /var/lib/mongodb && \
+    touch /var/lib/mongodb/.dummy && \
+    chown -R mongodb /var/lib/mongodb
 
-#VOLUME ["/etc/nginx"]
-#VOLUME ["/srv/www"]
+ADD mongodb.run /etc/s6/mongodb/run
+ADD conf/mongod.conf /etc/mongod.conf
 
-#EXPOSE 80
-#EXPOSE 443
+VOLUME ["/var/lib/mongodb"]
+
+EXPOSE 27017

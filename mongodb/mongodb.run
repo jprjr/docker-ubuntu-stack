@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+chown -R mongodb /var/lib/mongodb
+
+exec s6-setuidgid mongodb mongod --config /etc/mongod.conf
