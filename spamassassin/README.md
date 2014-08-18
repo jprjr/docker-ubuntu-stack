@@ -17,6 +17,9 @@ fully tested this yet. But here's what should work:
 ## Optional Volumes
 
 * `/etc/rsyslog.d` - If you want to customize your rsyslog
+* `/private/vars.sh` - If you don't want to set environment variables
+on the command line, you can place them in `/private/vars.sh` and
+they'll be sourced in the startup scripts.
 
 ## Ports
 
@@ -31,5 +34,5 @@ fully tested this yet. But here's what should work:
 
 ### Details on each variable
 
-* `IMAP_HOST` - What imap server to deliver mail to
+* `DOVECOT_HOST` - What dovecot server to deliver mail to
 * `SYSLOG_HOST` - use this to specify your syslog host (optional)
