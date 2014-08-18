@@ -17,6 +17,10 @@ messages will be forwarded to that address, port 514.
 
 * `/var/lib/spamassassin` - Used for storing spamassassin updates etc
 
+## Optional Volumes
+
+* `/etc/rsyslog.d` - If you want to customize your rsyslog
+
 ## Ports
 
 * 10025 - An smtpproxy port for Postfix
