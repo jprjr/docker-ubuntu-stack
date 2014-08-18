@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+declare DOVEHOT_HOST
+
+if [[ -f /private/vars.sh ]]; then
+    source /private/vars.sh
+fi
+
 sa-update
 
 DOVECOT_HOST=${DOVECOT_HOST:-}
