@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+sa-update
+
+IMAP_HOST=${IMAP_HOST:-}
+
+if [[ -z ${IMAP_HOST} ]]; then
+    echo "I need an imap_host to connect to!"
+    s6-svc -d /etc/s6/spampd
+    exit 0
+fi
+
+exec spampd --host 0.0.0.0:10025 --relayhost ${IMAP_HOST}:10026 --nodetach --user spampd --group spampd --tagall --config /etc/spampd.conf
