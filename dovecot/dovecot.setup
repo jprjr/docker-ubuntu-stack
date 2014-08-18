@@ -16,18 +16,6 @@ declare ADMIN_EMAIL
 
 declare SKIP_DB_SETUP
 
-# logic:
-# if linked to a host named 'mysql' OR MYSQL_HOST is defined
-# then store users in a mysqldb
-
-# if MYSQL_USER and MYSQL_PASS is defined, setup a dovecot user/pass
-# and db
-
-# if DOVECOT_SQL_USER + PASS is defined, use those to setup tables
-
-# lastly, if SKIP_DB_SETUP=1 none of this happens.
-
-
 shopt -s nullglob
 shopt -s dotglob
 
@@ -50,6 +38,11 @@ if [[ $need_setup_dovecot -eq 1 ]]; then
     if [[ -z $SKIP_DB_SETUP ]]; then
         # first check for MYSQL_HOST
         MYSQL_HOST=${MYSQL_HOST:-}
+
+        MYSQL_NAME=${MYSQL_NAME:-}
+        if [[ -n ${MYSQL_NAME} ]]; then
+            MYSQL_HOST=mysql
+        fi
 
         if [[ -n $MYSQL_HOST ]]; then
             MYSQL_USER=${MYSQL_USER:-}
