@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 
 SYSLOG_HOST=${SYSLOG_HOST:-}
+SYSLOG_NAME=${SYSLOG_NAME:-}
+
+if [[ -n ${SYSLOG_NAME} ]]; then
+    SYSLOG_HOST=${SYSLOG_NAME}
+fi
 
 if [[ -n ${SYSLOG_HOST} ]]; then
     rm -f /etc/rsyslog/conf.d/99-no-syslog.conf
