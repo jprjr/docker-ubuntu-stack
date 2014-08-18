@@ -6,7 +6,7 @@ RUN apt-get update && \
       dovecot-core dovecot-imapd dovecot-lmtpd \
       dovecot-sieve dovecot-managesieved dovecot-mysql dovecot-pgsql \
       dovecot-sqlite dovecot-antispam dovecot-ldap dovecot-solr \
-      rsync mysql-client spamc
+      rsync mysql-client
 
 RUN mkdir /opt/dovecot.default && \
     rm -rf /etc/dovecot/* && \

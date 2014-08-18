@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+SYSLOG_HOST=${SYSLOG_HOST:-}
+
+if [[ -n ${SYSLOG_HOST} ]]; then
+    rm -f /etc/rsyslog/conf.d/99-no-syslog.conf
+    echo "*.*  @@${SYSLOG_HOST}" > /etc/rsyslog/conf.d/99-remote-server.conf
+fi
