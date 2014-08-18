@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+# Environment variables
+declare MYSQL_HOST #optional
+
+declare DOVECOT_SQL_USER #requireed if using mysql
+declare DOVECOT_SQL_PASS #required if using mysql
+
+declare DOVECOT_HOST
+declare SPAMASSASSIN_HOST # required
+
+declare ADMIN_EMAIL
+declare SMTP_HOSTNAME # optional, will use smtp.(domain) from ADMIN_EMAIL
+
+
+shopt -s nullglob
+shopt -s dotglob
+
+declare need_setup_postfix
+
+postfix_files=(/etc/postfix/*)
+(( ${#postfix_files[*]} )) && need_setup_postfix=0 || need_setup_postfix=1
+
+shopt -u nullglob
+shopt -u dotglob
+
+if [[ $need_setup_postfix -eq 1 ]]; then
+    rsync -a /opt/postfix.default/ /etc/postfix/
+
+    SMTP_HOSTNAME=${SMTP_HOSTNAME}
+    if [[ -z ${SMTP_HOSTNAME} ]]; then
+        SMTP_HOSTNAME=smtp.$(echo $ADMIN_EMAIL | sed 's/.*@//')
+    fi
+    sed -i "s/##ADMIN_EMAIL##/$ADMIN_EMAIL/g" /etc/postfix/main.cf
+    sed -i "s/##SPAMASSASSIN_HOST##/$SPAMASSASSIN_HOST/g" /etc/postfix/main.cf
+    sed -i "s/##SMTP_HOSTNAME##/$SMTP_HOSTNAME/g" /etc/postfix/main.cf
+    sed -i "s/##DOVECOT_HOST##/$DOVECOT_HOST/g" /etc/postfix/main.cf
+
+    sed -i "s/##MYSQL_HOST##/$MYSQL_HOST/g" /etc/postfix/virtual-mailbox-domains.cf
+    sed -i "s/##DOVECOT_SQL_USER##/$DOVECOT_SQL_USER/g" /etc/postfix/virtual-mailbox-domains.cf
+    sed -i "s/##DOVECOT_SQL_PASS##/$DOVECOT_SQL_PASS/g" /etc/postfix/virtual-mailbox-domains.cf
+
+    sed -i "s/##MYSQL_HOST##/$MYSQL_HOST/g" /etc/postfix/virtual-mailbox-maps.cf
+    sed -i "s/##DOVECOT_SQL_USER##/$DOVECOT_SQL_USER/g" /etc/postfix/virtual-mailbox-maps.cf
+    sed -i "s/##DOVECOT_SQL_PASS##/$DOVECOT_SQL_PASS/g" /etc/postfix/virtual-mailbox-maps.cf
+
+    sed -i "s/##MYSQL_HOST##/$MYSQL_HOST/g" /etc/postfix/virtual-alias-maps.cf
+    sed -i "s/##DOVECOT_SQL_USER##/$DOVECOT_SQL_USER/g" /etc/postfix/virtual-alias-maps.cf
+    sed -i "s/##DOVECOT_SQL_PASS##/$DOVECOT_SQL_PASS/g" /etc/postfix/virtual-alias-maps.cf
+
+fi
+

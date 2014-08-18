@@ -1,0 +1,60 @@
+# See /usr/share/postfix/main.cf.dist for a commented, more complete version
+
+
+# Debian specific:  Specifying a file name will cause the first
+# line of that file to be used as the name.  The Debian default
+# is /etc/mailname.
+#myorigin = /etc/mailname
+
+smtpd_banner = $myhostname ESMTP $mail_name (Ubuntu)
+biff = no
+
+# appending .domain is the MUA's job.
+append_dot_mydomain = no
+
+# Uncomment the next line to generate "delayed mail" warnings
+#delay_warning_time = 4h
+
+readme_directory = no
+
+# TLS parameters
+smtpd_tls_cert_file=/srv/ssl/ssl_certificate.pem
+smtpd_tls_key_file=/srv/ssl/ssl_private_key.epm
+smtpd_use_tls=yes
+smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
+smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
+
+smtpd_tls_security_level=may
+smtpd_tls_auth_only=yes
+smtpd_tls_received_header=yes
+
+smtp_tls_security_level=may
+
+virtual_transport=lmtp:[##SPAMASSASSIN_HOST##]:10025
+
+# See /usr/share/doc/postfix/TLS_README.gz in the postfix-doc package for
+# information on enabling SSL in the smtp client.
+
+smtpd_relay_restrictions=permit_sasl_authenticated,permit_mynetworks,reject_unauth_destination
+smtpd_sender_restrictions="reject_non_fqdn_sender,reject_unknown_sender_domain,reject_rhsbl_sender dbl.spamhaus.org"
+smtpd_recipient_restrictions=permit_sasl_authenticated,permit_mynetworks,"reject_rbl_client zen.spamhaus.org",reject_unlisted_recipient
+message_size_limit=134217728
+
+myhostname = ##SMTP_HOSTNAME##
+alias_maps = hash:/etc/aliases
+alias_database = hash:/etc/aliases
+mydestination = $myhostname, localhost.localdomain, localhost
+relayhost = 
+mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
+mailbox_size_limit = 0
+recipient_delimiter = +
+inet_interfaces = all
+
+smtpd_sasl_path = inet:##DOVECOT_HOST##:12345
+smtpd_sasl_type = dovecot
+smtpd_sasl_auth_enable=yes
+
+virtual_mailbox_domains=mysql:/etc/postfix/virtual-mailbox-domains.cf
+virtual_mailbox_maps=myysql:/etc/postfix/virtual-mailbox-maps.cf
+virtual_alias_maps=mysql:/etc/postfix/virtual-alias-maps.cf
+local_recipient_maps=$virtual_mailbox_maps
