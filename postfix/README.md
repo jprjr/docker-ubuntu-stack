@@ -19,7 +19,12 @@ setup script assumes:
 ## Needed Volumes
 
 * `/etc/postfix` - Used for storing the postfix configuration.
-* `/srv/ssl` - Used for reading in the SSL cert and key you want to use
+* `/private/ssl` - Used for reading in the SSL cert and key you want to use
+
+## Optional volumes
+
+* `/private/vars.sh` - Used to setup environment variables from a file, instead
+of on the command line.
 
 ## Ports
 
