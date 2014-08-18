@@ -8,10 +8,7 @@ Well right now, I'm still working on getting other images setup, so I haven't
 fully tested this yet. But here's what should work:
 
 * spampd is listening to port `10025`
-* spampd needs to connect to an imap server via lmtp on port `10026`
-* You need an environment variable named `IMAP_HOST`
-* If there's an environment variable named `SYSLOG_SERVER` then syslog
-messages will be forwarded to that address, port 514.
+* spampd needs to connect to a dovecot server via lmtp on port `10026`
 
 ## Needed Volumes
 
@@ -29,10 +26,10 @@ messages will be forwarded to that address, port 514.
 
 ### The complete list:
 
-* `IMAP_HOST`
-* `SYSLOG_HOST`
+* `DOVECOT_HOST` (or link a container named `dovecot`)
+* `SYSLOG_HOST` (or link a container named `syslog`)
 
 ### Details on each variable
 
-* `IMAP_HOST` - What imap server to delivery mail to
+* `IMAP_HOST` - What imap server to deliver mail to
 * `SYSLOG_HOST` - use this to specify your syslog host (optional)
