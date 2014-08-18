@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-env
-
 # Environment variables
 declare MYSQL_HOST #optional
 declare MYSQL_USER #optional
@@ -15,6 +13,10 @@ declare SPAMASSASSIN_HOST
 declare ADMIN_EMAIL
 
 declare SKIP_DB_SETUP
+
+if [[ -f /private/vars.sh ]]; then
+    source /private/vars.sh
+fi
 
 shopt -s nullglob
 shopt -s dotglob
