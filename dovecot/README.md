@@ -27,8 +27,15 @@ Then I also try to setup the database (more details below, under "Environment Va
 ## Needed Volumes
 
 * `/srv/mail` - Used for storing mail
-* `/etc/dovecot` - Used for storing the dovecot configuration.
-* `/srv/ssl` - Used for reading in the SSL cert and key you want to use
+* `/private/ssl` - Used for reading in the SSL cert and key you want to use
+
+## Optional Volumes
+
+* `/etc/dovecot` - Used for storing the dovecot configuration. This will
+be rebuilt using environment variables at startup, but this is a handy way
+to do more customization.
+* `/private/vars.sh` - You can place any of the listed environment variables
+in this file and they'll be sourced at startup.
 
 ## Ports
 
