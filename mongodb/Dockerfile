@@ -9,13 +9,13 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 
 RUN mkdir -p /etc/s6/mongodb && \
     ln -s /bin/true /etc/s6/mongodb/finish && \
-    mkdir -p /var/lib/mongodb && \
-    touch /var/lib/mongodb/.dummy && \
-    chown -R mongodb /var/lib/mongodb
+    mkdir -p /srv/mongo/mongodb && \
+    touch /srv/mongo/mongodb/.dummy && \
+    chown -R mongodb /srv/mongo/mongodb
 
 ADD mongodb.run /etc/s6/mongodb/run
 ADD conf/mongod.conf /etc/mongod.conf
 
-VOLUME ["/var/lib/mongodb"]
+VOLUME ["/srv/mongo/mongodb"]
 
 EXPOSE 27017
