@@ -12,6 +12,10 @@ declare SPAMASSASSIN_HOST # required
 declare ADMIN_EMAIL
 declare SMTP_HOSTNAME # optional, will use smtp.(domain) from ADMIN_EMAIL
 
+if [[ -f /private/vars.sh ]]; then
+    source /private/vars.sh
+fi
+
 
 shopt -s nullglob
 shopt -s dotglob
