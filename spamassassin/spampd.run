@@ -3,9 +3,14 @@
 sa-update
 
 IMAP_HOST=${IMAP_HOST:-}
+IMAP_NAME=${IMAP_NAME:-}
+
+if [[ -n ${IMAP_NAME} ]]; then
+    IMAP_HOST=imap
+fi
 
 if [[ -z ${IMAP_HOST} ]]; then
-    echo "I need an imap_host to connect to!"
+    echo "I need either IMAP_HOST set or link to something named imap to connect to!"
     s6-svc -d /etc/s6/spampd
     exit 0
 fi
