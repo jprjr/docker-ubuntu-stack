@@ -19,7 +19,12 @@ setup script assumes:
 ## Needed Volumes
 
 * `/etc/postfix` - Used for storing the postfix configuration.
-* `/srv/ssl` - Used for reading in the SSL cert and key you want to use
+* `/private/ssl` - Used for reading in the SSL cert and key you want to use
+
+## Optional volumes
+
+* `/private/vars.sh` - Used to setup environment variables from a file, instead
+of on the command line.
 
 ## Ports
 
@@ -30,13 +35,14 @@ setup script assumes:
 
 ### The complete list:
 
-* `MYSQL_HOST`
+* `MYSQL_HOST` (not needed if there's a linked container named `mysql`)
+* `DOVECOT_HOST` (not needed if there's a linked container named `dovecot`)
+* `SPAMASSASSIN_HOST` (not needed if there's a linked container named `spamassassin`)
+* `SYSLOG_HOST` (optional. Can also link a container named `syslog`)
 * `DOVECOT_SQL_USER`
 * `DOVECOT_SQL_PASS`
-* `SPAMASSASSIN_HOST`
 * `ADMIN_EMAIL`
 * `SMTP_HOSTNAME`
-* `SYSLOG_HOST`
 
 ### Details on each variable
 

@@ -12,6 +12,10 @@ declare SPAMASSASSIN_HOST # required
 declare ADMIN_EMAIL
 declare SMTP_HOSTNAME # optional, will use smtp.(domain) from ADMIN_EMAIL
 
+if [[ -f /private/vars.sh ]]; then
+    source /private/vars.sh
+fi
+
 
 shopt -s nullglob
 shopt -s dotglob
@@ -31,6 +35,25 @@ if [[ $need_setup_postfix -eq 1 ]]; then
     if [[ -z ${SMTP_HOSTNAME} ]]; then
         SMTP_HOSTNAME=smtp.$(echo $ADMIN_EMAIL | sed 's/.*@//')
     fi
+
+    MYSQL_HOST=${MYSQL_HOST:-}
+    MYSQL_NAME=${MYSQL_NAME:-}
+    if [[ -n ${MYSQL_NAME} ]]; then
+        MYSQL_HOST=mysql
+    fi
+
+    SPAMASSASSIN_HOST=${SPAMASSASSIN_HOST:-}
+    SPAMASSASSIN_NAME=${SPAMASSASSIN_NAME:-}
+    if [[ -n ${SPAMASSASSIN_NAME} ]]; then
+        SPAMASSASSIN_HOST=spamassassin
+    fi
+
+    DOVECOT_HOST=${DOVECOT_HOST:-}
+    DOVECOT_NAME=${DOVECOT_NAME:-}
+    if [[ -n ${DOVECOT_NAME} ]]; then
+        DOVECOT_HOST=dovecot
+    fi
+
     sed -i "s/##ADMIN_EMAIL##/$ADMIN_EMAIL/g" /etc/postfix/main.cf
     sed -i "s/##SPAMASSASSIN_HOST##/$SPAMASSASSIN_HOST/g" /etc/postfix/main.cf
     sed -i "s/##SMTP_HOSTNAME##/$SMTP_HOSTNAME/g" /etc/postfix/main.cf
