@@ -25,7 +25,7 @@ smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
 smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
 
 smtpd_tls_security_level=may
-smtpd_tls_auth_only=yes
+smtpd_tls_auth_only=no
 smtpd_tls_received_header=yes
 
 smtp_tls_security_level=may
