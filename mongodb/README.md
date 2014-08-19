@@ -4,7 +4,7 @@ This is my attempt to run MongoDB in Docker.
 
 ## Needed Volumes
 
-* `/srv/mongo/mongodb` - Used for storing the mongodb configuration.
+* `/var/lib/mongo/mongodb` - Used for storing the mongodb data
 * `/etc/mongod.conf` - Used for reading in your own configuration
 
 ## Ports
