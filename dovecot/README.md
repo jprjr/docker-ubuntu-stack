@@ -11,7 +11,7 @@ I do know:
 
 * Mail is stored in /srv/mail/mailboxes
 * Sieve filters are stored at /srv/mail/sieve
-* An SSL cert and key is required, they should be at `/srv/ssl/ssl_certificate.pem` and `/srv/ssl/ssl_private_key.pem`
+* An SSL cert and key is required, they should be at `/private/ssl/ssl_certificate.pem` and `/private/ssl/ssl_private_key.pem`
 
 At startup, I read everything from /srv/ssl and copy it to /srv/mail/ssl/
 and `chown` it to the Dovecot user.
