@@ -1,4 +1,5 @@
 driver = mysql
+connect = host=##MYSQL_HOST## dbname=##DOVECOT_SQL_USER## user=##DOVECOT_SQL_USER## password=##DOVECOT_SQL_PASS##
 connect = ##MYSQL_HOST##
 default_pass_scheme = SHA512-CRYPT
 password_query = select email as user, password FROM users WHERE email='%u';
