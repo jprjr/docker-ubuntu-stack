@@ -8,7 +8,6 @@ if [[ -n ${SYSLOG_NAME} ]]; then
 fi
 
 if [[ -n ${SYSLOG_HOST} ]]; then
-    mkdir -p /etc/rsyslog/conf.d/
-    rm -f /etc/rsyslog/conf.d/99-no-syslog.conf
-    echo "*.*  @@${SYSLOG_HOST}" > /etc/rsyslog/conf.d/99-remote-server.conf
+    rm -f /etc/rsyslog.d/99-no-syslog.conf
+    echo "*.*  @@${SYSLOG_HOST}" > /etc/rsyslog.d/99-remote-server.conf
 fi
