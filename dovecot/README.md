@@ -2,6 +2,8 @@
 
 This is my attempt to setup Dovecot in Docker. Inspired by [mailinabox](https://github.com/mail-in-a-box/mailinabox).
 
+**This is still very experimental - do not use this in production!**
+
 ## How to use this darn thing?
 
 Well right now, I'm still working on getting other images setup (like postfix, spamassassin, etc), so I haven't fully tested this yet. But here's what
