@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+declare ELASTICSEARCH_HOST
+declare MONGO_HOST
+declare MONGO_DATABASE
+declare MONGO_COLLECTION
+declare need_setup_logstash
+
+mkdir -p /etc/logstash/conf.d
+
+
+shopt -s nullglob
+shopt -s dotglob
+
+logstash_files=(/etc/logstash/conf.d)
+(( ${#logstash_files[*]} )) && need_setup_logstash=0 || need_setup_logstash=1
+
+shopt -u nullglob
+shopt -u dotglob
+
+if [[ $need_setup_logstash -eq 1 ]]; then
+    rsync -a /opt/logstash.default/ /etc/logstash/conf.d/
+fi
+
+ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST:-}
+ELASTICSEARCH_NAME=${ELASTICSEARCH_NAME:-}
+if [[ -n ${ELASTICSEARCH_NAME} ]]; then
+    ELASTICSEARCH_HOST=elasticsearch
+fi
+
+
+if [[ -n ${ELASTICSEARCH_HOST} ]]; then
+  cp /opt/logstash-confs/80-output-elasticsearch.conf /etc/logstash/conf.d
+  sed -i "s/##ELASTICSEARCH_HOST##/$ELASTICSEARCH_HOST/g"\
+    /etc/logstash/conf.d/80-output-elasticsearch.conf
+fi
+
+MONGO_HOST=${MONGO_HOST:-}
+MONGO_NAME=${MONGO_NAME:-}
+if [[ -n ${MONGO_NAME} ]]; then
+    MONGO_HOST=mongo
+fi
+
+
+if [[ -n ${MONGO_HOST} ]]; then
+  cp /opt/logstash-confs/80-output-mongo.conf /etc/logstash/conf.d
+  sed -i "s/##MONGO_HOST##/$MONGO_HOST/g"\
+    /etc/logstash/conf.d/80-output-mongo.conf
+  sed -i "s/##MONGO_DATABASE##/$MONGO_DATABASE/g"\
+    /etc/logstash/conf.d/80-output-mongo.conf
+  sed -i "s/##MONGO_COLLECTION##/$MONGO_COLLECTION/g"\
+    /etc/logstash/conf.d/80-output-mongo.conf
+fi
+
+chown -R logstash:logstash /etc/logstash
+
