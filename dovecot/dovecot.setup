@@ -14,6 +14,8 @@ declare ADMIN_EMAIL
 
 declare SKIP_DB_SETUP
 
+mkdir -p /private/ssl/
+
 if [[ -f /private/vars.sh ]]; then
     source /private/vars.sh
 fi
@@ -78,4 +80,12 @@ if [[ $need_setup_mailfolders -eq 1 ]]; then
     mkdir -p /srv/mail/mailboxes
     mkdir -p /srv/mail/sieve
     chown -R mail:mail /srv/mail/*
+fi
+
+if [[ ! -f /private/ssl/ssl_certificate.pem ]]; then
+    DOMAIN=$(echo $ADMIN_EMAIL | sed 's/.*@//')
+    openssl req -new -newkey rsa:2048 -days 30 -nodes -x509 \
+    -keyout /private/ssl/ssl_private_key.pem \
+    -out /private/ssl/ssl_certificate.pem \
+    -subj '/O=Company/OU=Department/CN=www.'$DOMAIN
 fi
