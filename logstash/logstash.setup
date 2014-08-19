@@ -52,5 +52,9 @@ if [[ -n ${MONGO_HOST} ]]; then
     /etc/logstash/conf.d/80-output-mongo.conf
 fi
 
+if [[ $DEBUG -eq 1 ]]; then
+  cp /opt/logstash-confs/80-output-stdout.conf /etc/logstash/conf.d
+fi
+
 chown -R logstash:logstash /etc/logstash
 
