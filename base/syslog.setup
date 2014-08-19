@@ -13,5 +13,6 @@ if [[ -n ${SYSLOG_HOST} ]]; then
 fi
 
 if [[ $DEBUG -eq 1 ]]; then
+    rm -f /etc/rsyslog.d/99-no-syslog.conf
     echo "*.* /dev/stdout" > /etc/rsyslog.d/99-stdout.conf
 fi
