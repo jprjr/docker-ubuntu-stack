@@ -14,6 +14,8 @@ declare ADMIN_EMAIL
 
 declare SKIP_DB_SETUP
 
+mkdir -p /private/ssl/
+
 if [[ -f /private/vars.sh ]]; then
     source /private/vars.sh
 fi
