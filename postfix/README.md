@@ -2,6 +2,8 @@
 
 This is my attempt to setup Postfix in Docker. Inspired by [mailinabox](https://github.com/mail-in-a-box/mailinabox).
 
+**This is still very experimental. Please do not run this in production!**
+
 ## How to use this darn thing?
 
 Well right now, I'm still working on getting other images setup, so I haven't fully tested this yet. But here's what
