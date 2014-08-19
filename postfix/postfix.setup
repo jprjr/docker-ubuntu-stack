@@ -73,6 +73,7 @@ if [[ $need_setup_postfix -eq 1 ]]; then
 
 fi
 
+mkdir -p /private/ssl
 if [[ ! -f /private/ssl/ssl_certificate.pem ]]; then
     DOMAIN=$(echo $ADMIN_EMAIL | sed 's/.*@//')
     openssl req -new -newkey rsa:2048 -days 30 -nodes -x509 \
