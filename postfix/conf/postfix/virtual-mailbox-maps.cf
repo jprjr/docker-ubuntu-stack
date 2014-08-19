@@ -2,4 +2,4 @@ user = ##DOVECOT_SQL_USER##
 password = ##DOVECOT_SQL_PASS##
 hosts = ##MYSQL_HOST##
 dbname = ##DOVECOT_SQL_USER##
-query =  SELECT 1 FROM users WHERE email LIKE '%%@%s' 
+query =  SELECT 1 FROM users WHERE email LIKE '%s' 
