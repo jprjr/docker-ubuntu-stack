@@ -17,8 +17,5 @@ ADD nginx.run /etc/s6/nginx/run
 ADD default.conf /etc/nginx/conf.d/default.conf
 ADD index.html /srv/www/index.html
 
-VOLUME ["/etc/nginx"]
-VOLUME ["/srv/www"]
-
 EXPOSE 80
 EXPOSE 443
