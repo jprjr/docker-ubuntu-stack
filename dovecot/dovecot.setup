@@ -11,6 +11,7 @@ declare DOVECOT_SQL_PASS #required if using mysql
 declare SPAMASSASSIN_HOST
 
 declare ADMIN_EMAIL
+declare ADMIN_PASS
 
 declare SKIP_DB_SETUP
 declare SKIP_DOVECOT_SETUP
@@ -46,6 +47,8 @@ if [[ -z $SKIP_DOVECOT_SETUP ]]; then
             fi
             mysql -h $MYSQL_HOST -u$DOVECOT_SQL_USER -p$DOVECOT_SQL_PASS -e "CREATE TABLE IF NOT EXISTS users (id INTEGER AUTO_INCREMENT, email VARCHAR(254) NOT NULL UNIQUE, password TEXT NOT NULL, PRIMARY KEY (id) );" $DOVECOT_SQL_USER
             mysql -h $MYSQL_HOST -u$DOVECOT_SQL_USER -p$DOVECOT_SQL_PASS -e "CREATE TABLE IF NOT EXISTS aliases (id INTEGER AUTO_INCREMENT, source VARCHAR(254) NOT NULL UNIQUE, destination VARCHAR(254) NOT NULL, PRIMARY KEY (id) );" $DOVECOT_SQL_USER
+            sql_string=$(echo "INSERT INTO users(email,password) VALUES ('$ADMIN_EMAIL','"$(/opt/hash_password $ADMIN_PASS)"');")
+            mysql -h $MYSQL_HOST -u$DOVECOT_SQL_USER -p$DOVECOT_SQL_PASS -e "$sql_string" $DOVECOT_SQL_USER
         fi
 
 

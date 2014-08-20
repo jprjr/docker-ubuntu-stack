@@ -17,6 +17,7 @@ RUN mkdir /opt/dovecot.default && \
 
 ADD dovecot.run /etc/s6/dovecot/run
 ADD dovecot.setup /etc/s6/dovecot/setup
+ADD hash_password /opt/hash_password
 COPY conf /opt/dovecot.default
 
 EXPOSE 143
