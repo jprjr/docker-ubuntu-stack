@@ -13,6 +13,7 @@ declare SPAMASSASSIN_HOST
 declare ADMIN_EMAIL
 
 declare SKIP_DB_SETUP
+declare SKIP_DOVECOT_SETUP
 
 mkdir -p /private/ssl/
 
@@ -20,22 +21,9 @@ if [[ -f /private/vars.sh ]]; then
     source /private/vars.sh
 fi
 
-shopt -s nullglob
-shopt -s dotglob
+SKIP_DOVECOT_SETUP=${SKIP_DOVECOT_SETUP:-}
 
-declare need_setup_dovecot
-declare need_setup_mailfolders
-
-dovecot_files=(/etc/dovecot/*)
-(( ${#dovecot_files[*]} )) && need_setup_dovecot=0 || need_setup_dovecot=1
-
-mail_files=(/srv/mail/*)
-(( ${#mail_files[*]} )) && need_setup_mailfolders=0 || need_setup_mailfolders=1
-
-shopt -u nullglob
-shopt -u dotglob
-
-if [[ $need_setup_dovecot -eq 1 ]]; then
+if [[ -z $SKIP_DOVECOT_SETUP ]]; then
     rsync -a /opt/dovecot.default/ /etc/dovecot/
     sievec /etc/dovecot/sieve-spam.sieve
 
@@ -60,14 +48,16 @@ if [[ $need_setup_dovecot -eq 1 ]]; then
             mysql -h $MYSQL_HOST -u$DOVECOT_SQL_USER -p$DOVECOT_SQL_PASS -e "CREATE TABLE IF NOT EXISTS aliases (id INTEGER AUTO_INCREMENT, source VARCHAR(254) NOT NULL UNIQUE, destination VARCHAR(254) NOT NULL, PRIMARY KEY (id) );" $DOVECOT_SQL_USER
         fi
 
-        sed -i "s/#*\(\!include auth-system.conf.ext\)/#\1/"  /etc/dovecot/conf.d/10-auth.conf
-        sed -i "s/#\(\!include auth-sql.conf.ext\)/\1/"  /etc/dovecot/conf.d/10-auth.conf
-        sed -i "s/##MYSQL_HOST##/$MYSQL_HOST/g" /etc/dovecot/dovecot-sql.conf.ext
-        sed -i "s/##DOVECOT_SQL_USER##/$DOVECOT_SQL_USER/g" /etc/dovecot/dovecot-sql.conf.ext
-        sed -i "s/##DOVECOT_SQL_PASS##/$DOVECOT_SQL_PASS/g" /etc/dovecot/dovecot-sql.conf.ext
-        chmod 0600 /etc/dovecot/dovecot-sql.conf.ext
+
 
     fi
+    
+    sed -i "s/#*\(\!include auth-system.conf.ext\)/#\1/"  /etc/dovecot/conf.d/10-auth.conf
+    sed -i "s/#\(\!include auth-sql.conf.ext\)/\1/"  /etc/dovecot/conf.d/10-auth.conf
+    sed -i "s/##MYSQL_HOST##/$MYSQL_HOST/g" /etc/dovecot/dovecot-sql.conf.ext
+    sed -i "s/##DOVECOT_SQL_USER##/$DOVECOT_SQL_USER/g" /etc/dovecot/dovecot-sql.conf.ext
+    sed -i "s/##DOVECOT_SQL_PASS##/$DOVECOT_SQL_PASS/g" /etc/dovecot/dovecot-sql.conf.ext
+    chmod 0600 /etc/dovecot/dovecot-sql.conf.ext
 
     sed -i "s/##ADMIN_EMAIL##/$ADMIN_EMAIL/g" /etc/dovecot/conf.d/15-lda.conf
 
@@ -76,10 +66,10 @@ if [[ $need_setup_dovecot -eq 1 ]]; then
 
 fi
 
-if [[ $need_setup_mailfolders -eq 1 ]]; then
-    mkdir -p /srv/mail/mailboxes
-    mkdir -p /srv/mail/sieve
-fi
+
+mkdir -p /srv/mail/mailboxes
+mkdir -p /srv/mail/sieve
+
 
 chown -R mail:mail /srv/mail/*
 
