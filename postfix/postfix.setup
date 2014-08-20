@@ -12,23 +12,16 @@ declare SPAMASSASSIN_HOST # required
 declare ADMIN_EMAIL
 declare SMTP_HOSTNAME # optional, will use smtp.(domain) from ADMIN_EMAIL
 
+declare $SKIP_POSTFIX_SETUP
+
 if [[ -f /private/vars.sh ]]; then
     source /private/vars.sh
 fi
 
+$SKIP_POSTFIX_SETUP=${$SKIP_POSTFIX_SETUP:-}
 
-shopt -s nullglob
-shopt -s dotglob
+if [[ -n $SKIP_POSTFIX_SETUP ]]; then
 
-declare need_setup_postfix
-
-postfix_files=(/etc/postfix/*)
-(( ${#postfix_files[*]} )) && need_setup_postfix=0 || need_setup_postfix=1
-
-shopt -u nullglob
-shopt -u dotglob
-
-if [[ $need_setup_postfix -eq 1 ]]; then
     rsync -a /opt/postfix.default/ /etc/postfix/
 
     SMTP_HOSTNAME=${SMTP_HOSTNAME}
