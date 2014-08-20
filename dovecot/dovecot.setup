@@ -79,8 +79,9 @@ fi
 if [[ $need_setup_mailfolders -eq 1 ]]; then
     mkdir -p /srv/mail/mailboxes
     mkdir -p /srv/mail/sieve
-    chown -R mail:mail /srv/mail/*
 fi
+
+chown -R mail:mail /srv/mail/*
 
 if [[ ! -f /private/ssl/ssl_certificate.pem ]]; then
     DOMAIN=$(echo $ADMIN_EMAIL | sed 's/.*@//')
