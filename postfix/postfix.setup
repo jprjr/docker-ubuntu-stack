@@ -12,13 +12,13 @@ declare SPAMASSASSIN_HOST # required
 declare ADMIN_EMAIL
 declare SMTP_HOSTNAME # optional, will use smtp.(domain) from ADMIN_EMAIL
 
-declare $SKIP_POSTFIX_SETUP
+declare SKIP_POSTFIX_SETUP
 
 if [[ -f /private/vars.sh ]]; then
     source /private/vars.sh
 fi
 
-$SKIP_POSTFIX_SETUP=${$SKIP_POSTFIX_SETUP:-}
+SKIP_POSTFIX_SETUP=${SKIP_POSTFIX_SETUP:-}
 
 if [[ -z $SKIP_POSTFIX_SETUP ]]; then
 
