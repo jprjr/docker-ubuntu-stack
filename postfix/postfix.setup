@@ -20,7 +20,7 @@ fi
 
 $SKIP_POSTFIX_SETUP=${$SKIP_POSTFIX_SETUP:-}
 
-if [[ -n $SKIP_POSTFIX_SETUP ]]; then
+if [[ -z $SKIP_POSTFIX_SETUP ]]; then
 
     rsync -a /opt/postfix.default/ /etc/postfix/
 
