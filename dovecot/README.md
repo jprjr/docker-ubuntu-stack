@@ -50,6 +50,7 @@ Then I also try to setup the database (more details below, under "Environment Va
 * `DOVECOT_SQL_PASS`
 * `ADMIN_EMAIL`
 * `SKIP_DB_SETUP`
+* `SKIP_DOVECOT_SETUP`
 * `SYSLOG_HOST`
 
 ### Details on each variable
@@ -75,5 +76,7 @@ for that database. These are required variables.
 * `SKIP_DB_SETUP` - if this is set to anything, then the entire DB setup
 process will be skipped. This is useful if you already have a db of users
 you want to use, and don't want me trying to create tables.
+
+* `SKIP_DOVECOT_SETUP` - Disables creating the /etc/dovecot folder.
 
 * `SYSLOG_HOST` - Forward syslogs to this host.
