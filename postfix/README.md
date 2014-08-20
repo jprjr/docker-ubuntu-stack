@@ -45,6 +45,7 @@ of on the command line.
 * `DOVECOT_SQL_PASS`
 * `ADMIN_EMAIL`
 * `SMTP_HOSTNAME`
+* `SKIP_POSTFIX_SETUP`
 
 ### Details on each variable
 
@@ -64,3 +65,5 @@ for that database. These are required variables.
 * `SMTP_HOSTNAME` - Set an explicit hostname for Postfix to use.
 
 * `SYSLOG_HOST` - Forward all syslog messages to a host
+
+* `SKIP_POSTFIX_SETUP` - Everytime the container starts, the setup is recreated from scrach using environment variables. Setting this to anything (0, 1, whatever) will keep that step from happening.
