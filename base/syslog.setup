@@ -4,7 +4,7 @@ SYSLOG_HOST=${SYSLOG_HOST:-}
 SYSLOG_NAME=${SYSLOG_NAME:-}
 
 if [[ -n ${SYSLOG_NAME} ]]; then
-    SYSLOG_HOST=${SYSLOG_NAME}
+    SYSLOG_HOST=syslog
 fi
 
 if [[ -n ${SYSLOG_HOST} ]]; then
