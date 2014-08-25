@@ -8,11 +8,11 @@ if [[ -n ${SYSLOG_NAME} ]]; then
 fi
 
 if [[ -n ${SYSLOG_HOST} ]]; then
-    rm -f /etc/rsyslog.d/99-no-syslog.conf
-    echo "*.*  @@${SYSLOG_HOST}:5514" > /etc/rsyslog.d/99-remote-server.conf
+    echo "*.*  @${SYSLOG_HOST}" > /etc/syslog.conf
+else
+    echo "*.*    /dev/stdout" > /etc/syslog.conf
 fi
 
-if [[ $DEBUG -eq 1 ]]; then
-    rm -f /etc/rsyslog.d/99-no-syslog.conf
-    echo "*.* /dev/stdout" > /etc/rsyslog.d/99-stdout.conf
+if [[ -n ${SYSLOG_HOST} && $DEBUG -eq 1 ]]; then
+    echo "*.*    /dev/stdout" >> /etc/syslog.conf
 fi

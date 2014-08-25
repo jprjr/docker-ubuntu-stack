@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
 ./setup
-exec rsyslogd -n
+exec syslogd -n --no-klog
