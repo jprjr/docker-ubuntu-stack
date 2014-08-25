@@ -7,7 +7,7 @@ ADD s6-1.1.3.2-musl-static.tar /
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get install -y openssl ca-certificates \
-      inetutils-syslogd cron rsync && \
+     rsyslog-relp cron rsync && \
     dpkg -i /tmp/logstash-forwarder_0.3.1_amd64.deb && \
     apt-get clean && \
     mkdir -p /etc/s6/.s6-svscan && \
@@ -16,12 +16,13 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     mkdir /etc/s6/syslog && \
     ln -s /bin/true /etc/s6/cron/finish && \
     ln -s /bin/true /etc/s6/syslog/finish && \
-    rm -f /etc/syslog.conf && \
-    touch /etc/syslog.conf
+    rm -f /etc/rsyslog.conf && \
+    rm -rf /etc/rsyslog.d
 
 ADD cron.run /etc/s6/cron/run
 ADD syslog.setup /etc/s6/syslog/setup
 ADD syslog.run /etc/s6/syslog/run
+ADD rsyslog.conf /etc/rsyslog.conf
 
 ENTRYPOINT ["/usr/bin/s6-svscan","/etc/s6"]
 CMD []

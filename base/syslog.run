@@ -4,4 +4,4 @@ if [[ -f ./setup ]]; then
   ./setup
 fi
 
-exec syslogd -n --no-klog
+exec rsyslogd -f /etc/rsyslog.conf -n
