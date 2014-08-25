@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if [[ ./setup ]]; then
+if [[ -f ./setup ]]; then
   ./setup
 fi
 
