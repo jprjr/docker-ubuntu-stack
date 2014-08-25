@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+exec udp_redirect 0.0.0.0 514 127.0.0.1 5514

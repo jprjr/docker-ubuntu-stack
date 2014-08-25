@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+declare SKIP_LOGSTASH_SETUP
 declare ELASTICSEARCH_HOST
 declare MONGO_HOST
 declare MONGO_DATABASE
@@ -8,19 +9,14 @@ declare need_setup_logstash
 
 mkdir -p /etc/logstash/conf.d
 
+SKIP_LOGSTASH_SETUP=${SKIP_LOGSTASH_SETUP:-}
 
-shopt -s nullglob
-shopt -s dotglob
-
-logstash_files=(/etc/logstash/conf.d)
-(( ${#logstash_files[*]} )) && need_setup_logstash=0 || need_setup_logstash=1
-
-shopt -u nullglob
-shopt -u dotglob
-
-if [[ $need_setup_logstash -eq 1 ]]; then
-    rsync -a /opt/logstash.default/ /etc/logstash/conf.d/
+if [[ -n $SKIP_LOGSTASH_SETUP ]]; then
+  chown -R logstash:logstash /etc/logstash
+  exit 0
 fi
+
+rsync -a /opt/logstash.default/ /etc/logstash/conf.d/
 
 ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST:-}
 ELASTICSEARCH_NAME=${ELASTICSEARCH_NAME:-}
@@ -52,9 +48,9 @@ if [[ -n ${MONGO_HOST} ]]; then
     /etc/logstash/conf.d/80-output-mongo.conf
 fi
 
-if [[ $DEBUG -eq 1 ]]; then
+if [[ $STDOUT -eq 1 ]]; then
   cp /opt/logstash-confs/80-output-stdout.conf /etc/logstash/conf.d
 fi
 
 chown -R logstash:logstash /etc/logstash
-
+exit 0
