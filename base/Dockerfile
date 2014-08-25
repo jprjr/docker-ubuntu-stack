@@ -7,7 +7,7 @@ ADD s6-1.1.3.2-musl-static.tar /
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get install -y openssl ca-certificates \
-      inetutils-syslogd cron && \
+      inetutils-syslogd cron rsync && \
     dpkg -i /tmp/logstash-forwarder_0.3.1_amd64.deb && \
     apt-get clean && \
     mkdir -p /etc/s6/.s6-svscan && \
