@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
 
-./setup
+if [[ ./setup ]]; then
+  ./setup
+fi
+
 exec syslogd -n --no-klog
