@@ -76,4 +76,4 @@ if [ -n "$MAX_LOCKED_MEMORY" ]; then
 	ulimit -l $MAX_LOCKED_MEMORY
 fi
 
-exec $DAEMON -- $DAEMON_OPTS
+exec s6-setuidgid $ES_USER $DAEMON -- $DAEMON_OPTS
