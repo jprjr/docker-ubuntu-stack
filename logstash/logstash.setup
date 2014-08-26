@@ -80,5 +80,9 @@ if [[ ${LOGSTASH_STDOUT} -eq 1 ]]; then
   cp /opt/logstash-confs/80-output-stdout.conf /etc/logstash/conf.d
 fi
 
+if [[ ${LOGSTASH_DEBUG} -eq 1 ]]; then
+  cp /opt/logstash-confs/99-output-debug.conf /etc/logstash/conf.d
+fi
+
 chown -R logstash:logstash /etc/logstash
 exit 0
