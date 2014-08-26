@@ -1,0 +1,12 @@
+passdb {
+  driver = sql
+
+  # Path for SQL configuration file, see example-config/dovecot-sql.conf.ext
+  args = /etc/dovecot/dovecot-sql.conf.ext
+}
+
+
+userdb {
+  driver = static
+  args = uid=mail gid=mail home=/srv/mail/mailboxes/%d/%n
+}
