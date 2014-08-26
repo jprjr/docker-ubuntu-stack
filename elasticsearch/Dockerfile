@@ -11,7 +11,8 @@ RUN mkdir -p /etc/s6/elasticsearch && \
     ln -s /bin/true /etc/s6/elasticsearch/finish
 
 ADD elasticsearch.run /etc/s6/elasticsearch/run
-#ADD elasticsearch.setup /etc/s6/elasticsearch/setup
 COPY conf /opt/elasticsearch.default
 
+ 
 EXPOSE 9200
+EXPOSE 9300

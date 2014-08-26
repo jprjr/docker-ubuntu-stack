@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+declare ELASTICSEARCH_SKIP_SETUP
+
 ES_USER=elasticsearch
 ES_GROUP=elasticsearch
 JDK_DIRS="/usr/lib/jvm/java-7-oracle /usr/lib/jvm/java-7-openjdk /usr/lib/jvm/java-7-openjdk-amd64/ /usr/lib/jvm/java-7-openjdk-armhf /usr/lib/jvm/java-7-openjdk-i386/ /usr/lib/jvm/default-java"
@@ -38,20 +40,8 @@ WORK_DIR=/tmp/elasticsearch
 # Elasticsearch configuration directory
 CONF_DIR=/etc/elasticsearch
 
-declare elasticsearch_need_setup
+rsync -a /opt/elasticsearch.default/ /etc/elasticsearch/
 
-shopt -s nullglob
-shopt -s dotglob
-
-elasticsearch_files=(/etc/elasticsearch/*)
-(( ${#elasticsearch_files[*]} )) && elasticsearch_need_setup=0 || elasticsearch_need_setup=1
-
-shopt -u nullglob
-shopt -u dotglob
-
-if [[ $elasticsearch_need_setup -eq 1 ]]; then
-    rsync -a /opt/elasticsearch.default/ /etc/elasticsearch/
-fi
 chown -R "$ES_USER":"$ES_GROUP" /etc/elasticsearch
 
 # Elasticsearch configuration file (elasticsearch.yml)
