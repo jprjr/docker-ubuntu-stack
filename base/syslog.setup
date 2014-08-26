@@ -81,5 +81,5 @@ if [[ -n ${RSYSLOG_HOST} ]]; then
 fi
 
 if [[ $SYSLOG_STDOUT -eq 1 ]]; then
-    echo "action(type=\"omfile\" File=\"/dev/stdout\" template=\"RSYSLOG_ForwardFormat\")" >> /etc/rsyslog.conf
+    echo "action(type=\"omfile\" File=\"/dev/stdout\")" >> /etc/rsyslog.conf
 fi
