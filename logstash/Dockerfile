@@ -14,7 +14,8 @@ RUN mkdir -p /etc/s6/logstash && \
     ln -s /bin/true /etc/s6/rinetd/finish && \
     ln -s /bin/true /etc/s6/udp_redirect/finish && \
     rm /etc/s6/syslog/setup && \
-    echo "*.*    @127.0.0.1" > /etc/syslog.conf
+    echo "module(load=\"omrelp\")" >> /etc/rsyslog.conf && \
+    echo "action(type=\"omrelp\" Target=\"localhost\" Port=\"2514\")" >> /etc/rsyslog.conf
 
 ADD logstash.run /etc/s6/logstash/run
 ADD logstash.setup /etc/s6/logstash/setup

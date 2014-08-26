@@ -5,9 +5,14 @@ declare ELASTICSEARCH_HOST
 declare MONGO_HOST
 declare MONGO_DATABASE
 declare MONGO_COLLECTION
-declare need_setup_logstash
+declare LOGSTASH_STDOUT
 
 mkdir -p /etc/logstash/conf.d
+mkdir -p /etc/logstash/ssl
+
+if [[ -f /private/logstash/vars ]]; then
+    source /private/logstash/vars
+fi
 
 SKIP_LOGSTASH_SETUP=${SKIP_LOGSTASH_SETUP:-}
 
@@ -16,7 +21,30 @@ if [[ -n $SKIP_LOGSTASH_SETUP ]]; then
   exit 0
 fi
 
+# Copy default config files over
 rsync -a /opt/logstash.default/ /etc/logstash/conf.d/
+
+# Check for SSL key/cert for Lumberjack
+declare cert_found
+declare key_found
+cert_found=0
+key_found=0
+if [[ -f /private/ssl/cert.pem ]]; then
+    cp /private/ssl/cert.pem /etc/logstash/ssl/cert.pem
+    cert_found=1
+fi
+if [[ -f /private/ssl/key.pem ]]; then
+    cp /private/ssl/key.pem /etc/logstash/ssl/key.pem
+    key_found=1
+fi
+if [[ $cert_found -eq 0 || $key_found -eq 0 ]]; then
+    openssl req -new -newkey rsa:2048 -days 999 -nodes -x509 \
+    -keyout /etc/logstash/ssl/key.pem \
+    -out /etc/logstash/ssl/cert.pem \
+    -subj '/O=Company/OU=Department/CN=logstash'
+fi
+
+chown -R logstash:logstash /etc/logstash/ssl
 
 ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST:-}
 ELASTICSEARCH_NAME=${ELASTICSEARCH_NAME:-}
@@ -48,7 +76,7 @@ if [[ -n ${MONGO_HOST} ]]; then
     /etc/logstash/conf.d/80-output-mongo.conf
 fi
 
-if [[ $STDOUT -eq 1 ]]; then
+if [[ ${LOGSTASH_STDOUT} -eq 1 ]]; then
   cp /opt/logstash-confs/80-output-stdout.conf /etc/logstash/conf.d
 fi
 
