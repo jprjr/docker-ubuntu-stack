@@ -69,7 +69,7 @@ fi
 if [[ -n ${SYSLOG_HOST} ]]; then
     SYSLOG_CLIENT_PORT=${SYSLOG_CLIENT_PORT:-514}
     SYSLOG_CLIENT_PROTOCOL=${SYSLOG_CLIENT_PROTOCOL:-udp}
-    echo "action(type=\"omfwd\" Target=\"${SYSLOG_HOST}\" Port=\"${SYSLOG_CLIENT_PORT}\" Protocol=\"${SYSLOG_CLIENT_PROTOCOL}\")" >> /etc/rsyslog.conf
+    echo "action(type=\"omfwd\" Target=\"${SYSLOG_HOST}\" Port=\"${SYSLOG_CLIENT_PORT}\" Protocol=\"${SYSLOG_CLIENT_PROTOCOL}\" template=\"RSYSLOG_ForwardFormat\")" >> /etc/rsyslog.conf
 fi
 
 if [[ -n ${RSYSLOG_HOST} ]]; then
@@ -77,9 +77,9 @@ if [[ -n ${RSYSLOG_HOST} ]]; then
     RSYSLOG_CLIENT_TLS=${RSYSLOG_CLIENT_TLS:-off}
     echo "module(load=\"omrelp\")" >> /etc/rsyslog.conf
     #echo "action(type=\"omrelp\" Target=\"${RSYSLOG_HOST}\" Port=\"${RSYSLOG_CLIENT_PORT}\" tls=\"${RSYSLOG_CLIENT_TLS}\")" >> /etc/rsyslog.conf
-    echo "action(type=\"omrelp\" Target=\"${RSYSLOG_HOST}\" Port=\"${RSYSLOG_CLIENT_PORT}\")" >> /etc/rsyslog.conf
+    echo "action(type=\"omrelp\" Target=\"${RSYSLOG_HOST}\" Port=\"${RSYSLOG_CLIENT_PORT}\" template=\"RSYSLOG_ForwardFormat\")" >> /etc/rsyslog.conf
 fi
 
 if [[ $SYSLOG_STDOUT -eq 1 ]]; then
-    echo "action(type=\"omfile\" File=\"/dev/stdout\")" >> /etc/rsyslog.conf
+    echo "action(type=\"omfile\" File=\"/dev/stdout\" template=\"RSYSLOG_ForwardFormat\")" >> /etc/rsyslog.conf
 fi
