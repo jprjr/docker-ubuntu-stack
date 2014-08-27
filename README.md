@@ -55,7 +55,7 @@ will typically:
 My images will generally be configured through environment variables, and at startup will rebuild
 the applications configuration from scratch.
 
-Most applications will have an environment variable you can set to disable auto-rebuilding 
+My images will also have an environment variable you can set to disable auto-rebuilding 
 configs -- this is useful if you plan to use volumes to provide your own files.
 
 Additionally, instead of providing environment variables, you can mount a volume at
