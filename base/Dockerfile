@@ -31,6 +31,7 @@ ADD rsyslog.conf /etc/rsyslog.conf
 ADD logrotate.conf /etc/logrotate.conf
 ADD logstash-forwarder.conf /etc/logstash-forwarder.conf
 ADD logstash-forwarder.run /etc/s6/logstash-forwarder/run
+ADD logstash-forwarder.setup /etc/s6/logstash-forwarder/setup
 
 ENTRYPOINT ["/usr/bin/s6-svscan","/etc/s6"]
 CMD []
