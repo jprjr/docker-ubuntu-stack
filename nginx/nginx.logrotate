@@ -1,0 +1,13 @@
+/var/log/nginx/*.log {
+        daily
+        missingok
+        rotate 4
+        compress
+        delaycompress
+        notifempty
+        create 640 www-data adm
+        sharedscripts
+        postrotate
+                s6-svc -1 /etc/s6/nginx
+        endscript
+}
