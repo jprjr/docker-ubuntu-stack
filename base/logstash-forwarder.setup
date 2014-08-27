@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+declare LOGSTASH_SSL_CA_URL
+
+LOGSTASH_SSL_CA_URL=${LOGSTASH_SSL_CA_URL:-}
+
+if [[ -f /etc/logstash/ssl/ca.pem ]]; then
+  exit 0
+fi
+
+if [[ -n ${LOGSTASH_SSL_CA_URL} ]]; then
+    curl -R -L -o /etc/logstash/ssl/ca.pem "${LOGSTASH_SSL_CA_URL}"
+else
+    if [[ -n ${LOGSTASH_NAME} ]]; then
+      LOGSTASH_HOST=logstash
+    fi
+    LOGSTASH_PORT=${LOGSTASH_PORT:-5043}
+    openssl s_client -showcerts -connect "${LOGSTASH_HOST}:${LOGSTASH_PORT}" </dev/null 2>/dev/null | openssl x509 -outform PEM > /etc/logstash/ssl/ca.pem
+fi

@@ -21,7 +21,8 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     touch /etc/s6/logstash-forwarder/down && \
     rm -f /etc/rsyslog.conf && \
     rm -rf /etc/rsyslog.d && \
-    mkdir /etc/logrotate.jprjr.d
+    mkdir /etc/logrotate.jprjr.d && \
+    mkdir -p /etc/logstash/ssl
 
 ADD cron.run /etc/s6/cron/run
 ADD syslog.setup /etc/s6/syslog/setup
