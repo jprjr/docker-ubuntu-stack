@@ -14,8 +14,11 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 
 ADD nginx.conf /etc/nginx/nginx.conf
 ADD nginx.run /etc/s6/nginx/run
+ADD nginx.setup /etc/s6/nginx/setup
+ADD nginx.logrotate /etc/logrotate.jprjr.d/nginx
 ADD default.conf /etc/nginx/conf.d/default.conf
 ADD index.html /srv/www/index.html
+ADD logstash-forwarder.conf /etc/logstash-forwarder.conf
 
 EXPOSE 80
 EXPOSE 443
