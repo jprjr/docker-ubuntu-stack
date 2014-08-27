@@ -119,7 +119,9 @@ Here's a list of links you can make, and what features that will turn on.
 
 ### Environment variables
 
-Here's the complete list of environment variables you can set, and what they do:
+Here's the complete list of environment variables you can set, and what they do.
+
+You can also set these variables by mounting a file at `/private/syslog/vars`
 
 * `SYSLOG_HOST` - syslog messages will be forwarded via udp on port 514 to this host.
 * `RSYSLOG_HOST` - syslog messages will be forward via tcp port 2514 ([relp](http://www.rsyslog.com/doc/relp.html)) to this host.

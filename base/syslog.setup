@@ -22,6 +22,10 @@ declare RSYSLOG_SERVER
 declare RSYSLOG_SERVER_PORT
 declare RSYSLOG_SERVER_TLS
 
+if [[ -f /private/syslog/vars ]]; then
+  source /private/syslog/vars
+fi
+
 SYSLOG_HOST=${SYSLOG_HOST:-}
 SYSLOG_NAME=${SYSLOG_NAME:-}
 
