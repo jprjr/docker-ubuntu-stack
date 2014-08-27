@@ -3,7 +3,7 @@
 declare SYSLOG_HOST
 declare SYSLOG_NAME
 
-declare RSYSLOG_NAME
+declare RSYSLOG_HOST
 declare RSYSLOG_NAME
 
 declare SYSLOG_STDOUT
@@ -21,6 +21,10 @@ declare SYSLOG_SERVER_TCP
 declare RSYSLOG_SERVER
 declare RSYSLOG_SERVER_PORT
 declare RSYSLOG_SERVER_TLS
+
+if [[ -f /private/syslog/vars ]]; then
+  source /private/syslog/vars
+fi
 
 SYSLOG_HOST=${SYSLOG_HOST:-}
 SYSLOG_NAME=${SYSLOG_NAME:-}
