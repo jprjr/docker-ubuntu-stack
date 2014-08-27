@@ -33,13 +33,48 @@ There's a few benefits to using s6:
   * (Or just symlink `finish` to `/bin/true`).
 * I didn't write it, somebody who knows a lot about init did.
 
+## Concepts I use throughout my images
+
+### Link-driven options.
+
+One of my goals is to allow linking to other containers enable options on the fly. For example,
+if an app is able to use a MySQL db and a PostgreSQL db, linking to either should enable that
+database.
+
+This means a lot of my services will have some type of `setup` script that gets run. `setup`
+will typically:
+
+* Check for an environment variable named `<SERVICE>_HOST` or a link named `<SERVICE>`
+  * This allows you to use links, or just connect to a host directly.
+  * For example, to connect to a syslog server, you can define an environment variable
+    named `SYSLOG_HOST`, or make a link named `syslog`
+* Edit configuration files as needed.
+
+### Configuration primarily through environment variables
+
+My images will generally be configured through environment variables, and at startup will rebuild
+the applications configuration from scratch.
+
+Most applications will have an environment variable you can set to disable auto-rebuilding 
+configs -- this is useful if you plan to use volumes to provide your own files.
+
+Additionally, instead of providing environment variables, you can mount a volume at
+`/private/<service>/vars` - this file will be sourced at startup.
+
+So for example, in my logstash image, you can place a file at `/private/logstash/vars`, and
+that file can contain lines like:
+
+```bash
+LOGSTASH_STDOUT=0
+MONGO_DATABASE=devlogs
+...
+```
+
+And those values will be used to build the configuration.
+
 ## Caveats
 
 1. I'm pretty sure s6 has the ability to do dependency management, but I haven't figured that out yet.
   * In practice, I don't see this being a problem. I usually place dependent services into their own containers anyway.
 2. s6 **requires** your process to not background. It doesn't have any forking detection like systemd/upstart does.
 
-## TODO
-
-1. Add the syslog-ng service.
-2. Look into statically compiling the logstash-forwarder daemon.
