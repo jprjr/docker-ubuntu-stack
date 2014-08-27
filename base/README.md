@@ -26,10 +26,6 @@ summary:
 
 That's it! S6 will launch your service, monitor it, and relaunch it if it dies.
 
-## Caveats
-
-Your process shouldn't fork/background. Keep it in the foreground.
-
 ## Pre-installed software and options
 
 So a concept I really like is letting links turn features on and off.  
@@ -111,3 +107,35 @@ if [[ -n ${LOGSTASH_HOST} ]]; then
   s6-svc -u /etc/s6/logstash-forwarder
 fi
 ```
+
+## Reference
+
+### Links
+
+Here's a list of links you can make, and what features that will turn on.
+
+* `syslog` - syslog messages will be forwarded via udp on port 514.
+* `rsyslog` - syslog messages will be forward via tcp port 2514 ([relp](http://www.rsyslog.com/doc/relp.html)).
+
+### Environment variables
+
+Here's the complete list of environment variables you can set, and what they do:
+
+* `SYSLOG_HOST` - syslog messages will be forwarded via udp on port 514
+* `RSYSLOG_HOST` - syslog messages will be forward via tcp port 2514 ([relp](http://www.rsyslog.com/doc/relp.html)).
+  * In the case that you define a variable named `SYSLOG_HOST` / `RSYSLOG_HOST` *and* a link, the link will be used and
+    the `_HOST` variable ignored.
+
+* `SYSLOG_CLIENT_PORT` - specify an alternate port to connect to
+* `SYSLOG_CLIENT_PROTOCOL` - this can be set to `tcp` or `udp`, defaults to `udp`
+
+* `RSYSLOG_CLIENT_PORT` - specify an alternative port for relp
+
+* `SYSLOG_SERVER` - enable the syslog server, defaults to listening on port 514 via tcp and udp.
+* `SYSLOG_SERVER_UDP` - change the port for incoming udp syslog traffic, or set to `0` to disable.
+* `SYSLOG_SERVER_TCP` - change the port for incoming tcp syslog traffic, or set to `0` to disable.
+
+* `RSYSLOG_SERVER` - enable the relp server, defaults to listening on port 2514 via tcp
+* `RSYSLOG_SERVER_PORT` - change the port for incoming relp traffic, or set to `0` to disable.
+
+* `SYSLOG_STDOUT` - force syslog messages to appear on stdout
