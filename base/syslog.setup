@@ -3,7 +3,7 @@
 declare SYSLOG_HOST
 declare SYSLOG_NAME
 
-declare RSYSLOG_NAME
+declare RSYSLOG_HOST
 declare RSYSLOG_NAME
 
 declare SYSLOG_STDOUT
