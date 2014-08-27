@@ -121,8 +121,8 @@ Here's a list of links you can make, and what features that will turn on.
 
 Here's the complete list of environment variables you can set, and what they do:
 
-* `SYSLOG_HOST` - syslog messages will be forwarded via udp on port 514
-* `RSYSLOG_HOST` - syslog messages will be forward via tcp port 2514 ([relp](http://www.rsyslog.com/doc/relp.html)).
+* `SYSLOG_HOST` - syslog messages will be forwarded via udp on port 514 to this host.
+* `RSYSLOG_HOST` - syslog messages will be forward via tcp port 2514 ([relp](http://www.rsyslog.com/doc/relp.html)) to this host.
   * In the case that you define a variable named `SYSLOG_HOST` / `RSYSLOG_HOST` *and* a link, the link will be used and
     the `_HOST` variable ignored.
 
