@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+
+declare SKIP_LOGSTASH_SETUP
+declare ELASTICSEARCH_HOST
+declare MONGO_HOST
+declare MONGO_DATABASE
+declare MONGO_COLLECTION
+declare LOGSTASH_STDOUT
+
+mkdir -p /etc/logstash/conf.d
+mkdir -p /etc/logstash/ssl
+
+if [[ -f /private/logstash/vars ]]; then
+    source /private/logstash/vars
+fi
+
+SKIP_LOGSTASH_SETUP=${SKIP_LOGSTASH_SETUP:-}
+
+if [[ -n $SKIP_LOGSTASH_SETUP ]]; then
+  chown -R logstash:logstash /etc/logstash
+  exit 0
+fi
+
+# Copy default config files over
+rsync -a /opt/logstash.default/ /etc/logstash/conf.d/
+
+# Check for SSL key/cert for Lumberjack
+declare cert_found
+declare key_found
+cert_found=0
+key_found=0
+if [[ -f /private/ssl/cert.pem ]]; then
+    cp /private/ssl/cert.pem /etc/logstash/ssl/cert.pem
+    cert_found=1
+fi
+if [[ -f /private/ssl/key.pem ]]; then
+    cp /private/ssl/key.pem /etc/logstash/ssl/key.pem
+    key_found=1
+fi
+if [[ $cert_found -eq 0 || $key_found -eq 0 ]]; then
+    openssl req -new -newkey rsa:2048 -days 999 -nodes -x509 \
+    -keyout /etc/logstash/ssl/key.pem \
+    -out /etc/logstash/ssl/cert.pem \
+    -subj '/O=Company/OU=Department/CN=logstash'
+fi
+
+chown -R logstash:logstash /etc/logstash/ssl
+
+ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST:-}
+ELASTICSEARCH_NAME=${ELASTICSEARCH_NAME:-}
+if [[ -n ${ELASTICSEARCH_NAME} ]]; then
+    ELASTICSEARCH_HOST=elasticsearch
+fi
+
+
+if [[ -n ${ELASTICSEARCH_HOST} ]]; then
+  cp /opt/logstash-confs/80-output-elasticsearch.conf /etc/logstash/conf.d
+  sed -i "s/##ELASTICSEARCH_HOST##/$ELASTICSEARCH_HOST/g"\
+    /etc/logstash/conf.d/80-output-elasticsearch.conf
+fi
+
+MONGO_HOST=${MONGO_HOST:-}
+MONGO_NAME=${MONGO_NAME:-}
+if [[ -n ${MONGO_NAME} ]]; then
+    MONGO_HOST=mongo
+fi
+
+
+if [[ -n ${MONGO_HOST} ]]; then
+  cp /opt/logstash-confs/80-output-mongo.conf /etc/logstash/conf.d
+  sed -i "s/##MONGO_HOST##/$MONGO_HOST/g"\
+    /etc/logstash/conf.d/80-output-mongo.conf
+  sed -i "s/##MONGO_DATABASE##/$MONGO_DATABASE/g"\
+    /etc/logstash/conf.d/80-output-mongo.conf
+  sed -i "s/##MONGO_COLLECTION##/$MONGO_COLLECTION/g"\
+    /etc/logstash/conf.d/80-output-mongo.conf
+fi
+
+if [[ ${LOGSTASH_STDOUT} -eq 1 ]]; then
+  cp /opt/logstash-confs/80-output-stdout.conf /etc/logstash/conf.d
+fi
+
+if [[ ${LOGSTASH_DEBUG} -eq 1 ]]; then
+  cp /opt/logstash-confs/99-output-debug.conf /etc/logstash/conf.d
+fi
+
+chown -R logstash:logstash /etc/logstash
+exit 0

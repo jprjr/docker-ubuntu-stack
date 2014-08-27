@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+exec rinetd -c /etc/rinetd.conf -f
