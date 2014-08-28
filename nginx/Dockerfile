@@ -20,5 +20,7 @@ ADD default.conf /etc/nginx/conf.d/default.conf
 ADD index.html /srv/www/index.html
 ADD logstash-forwarder.conf /etc/logstash-forwarder.conf
 
+RUN chmod 0644 /etc/logrotate.jprjr.d/nginx
+
 EXPOSE 80
 EXPOSE 443
