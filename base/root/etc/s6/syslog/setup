@@ -99,5 +99,5 @@ if [[ ${SYSLOG_STDOUT} -eq 1 ]]; then
 fi
 
 if [[ ${SYSLOG_STDOUT} -eq 0 && ${SYSLOG_SERVER} -eq 0 && ${RSYSLOG_SERVER} -eq 0 ]]; then
-    echo "action(type=\"omfile\" File=\"/dev/null\")" >> /etc/rsyslogconf
+    echo "action(type=\"omfile\" File=\"/dev/null\")" >> /etc/rsyslog.conf
 fi
