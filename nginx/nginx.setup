@@ -1,24 +1,17 @@
 #!/usr/bin/env bash
 
-declare LOGSTASH_HOST
+declare LOG_FILE_PATH
+declare LOG_FILE_TYPE
 
-LOGSTASH_HOST=${LOGSTASH_HOST:-}
-LOGSTASH_NAME=${LOGSTASH_NAME:-}
-
-if [[ -n ${LOGSTASH_NAME} ]]; then
-  LOGSTASH_HOST=logstash
+if [[ -f /private/nginx/vars ]]; then
+  source /private/nginx/vars
 fi
 
-if [[ -n ${LOGSTASH_HOST} ]]; then
-  LOGSTASH_PORT=${LOGSTASH_PORT:-5043}
-  LOG_FILE_PATH="/var/log/nginx/*.log"
-  LOG_FILE_TYPE="nginx"
+LOG_FILE_PATH=${LOG_FILE_PATH:-/var/log/nginx/*.log}
+LOG_FILE_TYPE=${LOG_FILE_TYPE:-nginx}
 
-  sed -i "s/##LOGSTASH_HOST##/$LOGSTASH_HOST/g" /etc/logstash-forwarder.conf
-  sed -i "s/##LOGSTASH_PORT##/$LOGSTASH_PORT/g" /etc/logstash-forwarder.conf
-  sed -i "s|##LOG_FILE_PATH##|$LOG_FILE_PATH|g" /etc/logstash-forwarder.conf
-  sed -i "s/##LOG_FILE_TYPE##/$LOG_FILE_TYPE/g" /etc/logstash-forwarder.conf
+echo "LOG_FILE_PATH=${LOG_FILE_PATH}" >> /etc/s6/logstash-forwarder/vars
+echo "LOG_FILE_TYPE=${LOG_FILE_TYPE}" >> /etc/s6/logstash-forwarder/vars
 
-  rm /etc/s6/logstash-forwarder/down
-  s6-svc -u /etc/s6/logstash-forwarder
-fi
+rm /etc/s6/logstash-forwarder/down
+s6-svc -u /etc/s6/logstash-forwarder
