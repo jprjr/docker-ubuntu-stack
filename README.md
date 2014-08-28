@@ -42,6 +42,7 @@ All my images will follow a few rules:
 1. Any needed SSL certs/keys will be copied from `/private/ssl` at runtime.
   * `cert.pem`
   * `key.pem`
+  * `ca.pem` (used for building certificate chains, validating certs, etc)
 2. Any needed SSH keys will be copied from `/private/ssh` at runtime
   * `authorized_keys`
 3. All service setup scripts will source `/private/<service>/vars` at runtime
