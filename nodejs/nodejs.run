@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+if [[ -f ./setup ]]; then
+  ./setup
+fi
+
+HOME=/home/default
+NODE_PATH=/usr/lib/node_modules
+
+cd /home/default
+
+declare FOREVER_ARGS
+
+if [[ ${NODEJS_NO_AUTOREFRESH} -eq 0 ]]; then
+  FOREVER_ARGS="-w"
+fi
+
+s6-setuidgid default exec forever ${FOREVER_ARGS} "${NODEJS_SCRIPT}" $NODEJS_SCRIPT_ARGS
