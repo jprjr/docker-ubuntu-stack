@@ -9,7 +9,7 @@ RUN apt-get update && \
 RUN mkdir /opt/postfix.default && \
     rm -rf /etc/postfix/* && \
     mkdir /etc/s6/postfix && \
-    ln -s /bin/true /etc/s6/postfix/finish 
+    ln -s /bin/true /etc/s6/postfix/finish
 
 ADD postfix.setup /etc/s6/postfix/setup
 ADD postfix.run /etc/s6/postfix/run

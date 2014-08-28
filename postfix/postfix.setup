@@ -12,23 +12,16 @@ declare SPAMASSASSIN_HOST # required
 declare ADMIN_EMAIL
 declare SMTP_HOSTNAME # optional, will use smtp.(domain) from ADMIN_EMAIL
 
+declare SKIP_POSTFIX_SETUP
+
 if [[ -f /private/vars.sh ]]; then
     source /private/vars.sh
 fi
 
+SKIP_POSTFIX_SETUP=${SKIP_POSTFIX_SETUP:-}
 
-shopt -s nullglob
-shopt -s dotglob
+if [[ -z $SKIP_POSTFIX_SETUP ]]; then
 
-declare need_setup_postfix
-
-postfix_files=(/etc/postfix/*)
-(( ${#postfix_files[*]} )) && need_setup_postfix=0 || need_setup_postfix=1
-
-shopt -u nullglob
-shopt -u dotglob
-
-if [[ $need_setup_postfix -eq 1 ]]; then
     rsync -a /opt/postfix.default/ /etc/postfix/
 
     SMTP_HOSTNAME=${SMTP_HOSTNAME}
@@ -73,3 +66,11 @@ if [[ $need_setup_postfix -eq 1 ]]; then
 
 fi
 
+mkdir -p /private/ssl
+if [[ ! -f /private/ssl/ssl_certificate.pem ]]; then
+    DOMAIN=$(echo $ADMIN_EMAIL | sed 's/.*@//')
+    openssl req -new -newkey rsa:2048 -days 30 -nodes -x509 \
+    -keyout /private/ssl/ssl_private_key.pem \
+    -out /private/ssl/ssl_certificate.pem \
+    -subj '/O=Company/OU=Department/CN=www.'$DOMAIN
+fi

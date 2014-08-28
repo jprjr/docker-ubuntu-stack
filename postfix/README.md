@@ -2,6 +2,8 @@
 
 This is my attempt to setup Postfix in Docker. Inspired by [mailinabox](https://github.com/mail-in-a-box/mailinabox).
 
+**This is still very experimental. Please do not run this in production!**
+
 ## How to use this darn thing?
 
 Well right now, I'm still working on getting other images setup, so I haven't fully tested this yet. But here's what
@@ -43,6 +45,7 @@ of on the command line.
 * `DOVECOT_SQL_PASS`
 * `ADMIN_EMAIL`
 * `SMTP_HOSTNAME`
+* `SKIP_POSTFIX_SETUP`
 
 ### Details on each variable
 
@@ -62,3 +65,5 @@ for that database. These are required variables.
 * `SMTP_HOSTNAME` - Set an explicit hostname for Postfix to use.
 
 * `SYSLOG_HOST` - Forward all syslog messages to a host
+
+* `SKIP_POSTFIX_SETUP` - Everytime the container starts, the setup is recreated from scrach using environment variables. Setting this to anything (0, 1, whatever) will keep that step from happening.
