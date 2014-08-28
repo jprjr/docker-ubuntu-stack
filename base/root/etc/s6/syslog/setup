@@ -22,8 +22,16 @@ declare RSYSLOG_SERVER
 declare RSYSLOG_SERVER_PORT
 declare RSYSLOG_SERVER_TLS
 
+declare RSYSLOG_SKIP_SETUP
+
 if [[ -f /private/syslog/vars ]]; then
   source /private/syslog/vars
+fi
+
+RSYSLOG_SKIP_SETUP=${RSYSLOG_SKIP_SETUP:-0}
+
+if [[ ${RSYSLOG_SKIP_SETUP} -eq 1 ]]; then
+  exit 0
 fi
 
 SYSLOG_HOST=${SYSLOG_HOST:-}
@@ -43,8 +51,10 @@ if [[ -n ${RSYSLOG_NAME} ]]; then
     RSYSLOG_HOST=rsyslog
 fi
 
-if [[ -z ${SYSLOG_HOST} && -z ${RSYSLOG_HOST} ]]; then
+if [[ -z ${SYSLOG_HOST} && -z ${RSYSLOG_HOST} && -z ${SYSLOG_STDOUT} ]]; then
     SYSLOG_STDOUT=1
+else
+    SYSLOG_STDOUT=0
 fi
 
 if [[ ${SYSLOG_SERVER} -eq 1 ]]; then
@@ -84,6 +94,10 @@ if [[ -n ${RSYSLOG_HOST} ]]; then
     echo "action(type=\"omrelp\" Target=\"${RSYSLOG_HOST}\" Port=\"${RSYSLOG_CLIENT_PORT}\" template=\"RSYSLOG_ForwardFormat\")" >> /etc/rsyslog.conf
 fi
 
-if [[ $SYSLOG_STDOUT -eq 1 ]]; then
+if [[ ${SYSLOG_STDOUT} -eq 1 ]]; then
     echo "action(type=\"omfile\" File=\"/dev/stdout\")" >> /etc/rsyslog.conf
+fi
+
+if [[ ${SYSLOG_STDOUT} -eq 0 && ${SYSLOG_SERVER} -eq 0 && ${RSYSLOG_SERVER} -eq 0 ]]; then
+    echo "action(type=\"omfile\" File=\"/dev/null\")" >> /etc/rsyslogconf
 fi
