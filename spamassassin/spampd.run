@@ -1,13 +1,24 @@
 #!/usr/bin/env bash
 
+declare DOVEHOT_HOST
+
+if [[ -f /private/vars.sh ]]; then
+    source /private/vars.sh
+fi
+
 sa-update
 
-IMAP_HOST=${IMAP_HOST:-}
+DOVECOT_HOST=${DOVECOT_HOST:-}
+DOVECOT_NAME=${DOVECOT_NAME:-}
 
-if [[ -z ${IMAP_HOST} ]]; then
-    echo "I need an imap_host to connect to!"
+if [[ -n ${DOVECOT_NAME} ]]; then
+    DOVECOT_HOST=dovecot
+fi
+
+if [[ -z ${DOVECOT_HOST} ]]; then
+    echo "I need either DOVECOT_HOST set or link to something named dovecot to connect to!"
     s6-svc -d /etc/s6/spampd
     exit 0
 fi
 
-exec spampd --host 0.0.0.0:10025 --relayhost ${IMAP_HOST}:10026 --nodetach --user spampd --group spampd --tagall --config /etc/spampd.conf
+exec spampd --host 0.0.0.0:10025 --relayhost ${DOVECOT_HOST}:10026 --nodetach --user spampd --group spampd --tagall --config /etc/spampd.conf

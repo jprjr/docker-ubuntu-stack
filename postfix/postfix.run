@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
 
 ./setup
-exec rsyslogd -n
+
+exec postfix start

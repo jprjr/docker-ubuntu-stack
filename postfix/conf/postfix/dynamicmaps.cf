@@ -1,0 +1,10 @@
+# Postfix dynamic maps configuration file.
+#
+#type	location of .so file			open function	(mkmap func)
+#====	================================	=============	============
+tcp	/usr/lib/postfix/dict_tcp.so		dict_tcp_open	
+sqlite	/usr/lib/postfix/dict_sqlite.so		dict_sqlite_open	
+pcre	/usr/lib/postfix/dict_pcre.so		dict_pcre_open	
+pgsql	/usr/lib/postfix/dict_pgsql.so		dict_pgsql_open	
+ldap	/usr/lib/postfix/dict_ldap.so		dict_ldap_open	
+mysql	/usr/lib/postfix/dict_mysql.so		dict_mysql_open	
