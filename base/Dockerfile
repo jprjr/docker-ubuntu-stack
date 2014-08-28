@@ -33,5 +33,7 @@ ADD logstash-forwarder.conf /etc/logstash-forwarder.conf
 ADD logstash-forwarder.run /etc/s6/logstash-forwarder/run
 ADD logstash-forwarder.setup /etc/s6/logstash-forwarder/setup
 
+RUN chmod 0644 /etc/logrotate.conf
+
 ENTRYPOINT ["/usr/bin/s6-svscan","/etc/s6"]
 CMD []
