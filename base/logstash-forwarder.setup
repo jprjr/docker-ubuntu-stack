@@ -1,19 +1,51 @@
 #!/usr/bin/env bash
 
+declare LOGSTASH_HOST
+declare LOGSTASH_PORT
+
+declare LOG_FILE_PATH
+declare LOG_FILE_TYPE
+
 declare LOGSTASH_SSL_CA_URL
+
+if [[ -f /private/logstash-forwarder/vars ]]; then
+  source /private/logstash-forwarder/vars
+fi
+
+LOGSTASH_HOST=${LOGSTASH_HOST:-}
+LOGSTASH_NAME=${LOGSTASH_NAME:-}
+
+LOGSTASH_PORT=${LOGSTASH_PORT:-5043}
 
 LOGSTASH_SSL_CA_URL=${LOGSTASH_SSL_CA_URL:-}
 
-if [[ -f /etc/logstash/ssl/ca.pem ]]; then
-  exit 0
+if [[ -n ${LOGSTASH_NAME} ]]; then
+  LOGSTASH_HOST=logstash
 fi
 
-if [[ -n ${LOGSTASH_SSL_CA_URL} ]]; then
-    curl -R -L -o /etc/logstash/ssl/ca.pem "${LOGSTASH_SSL_CA_URL}"
-else
-    if [[ -n ${LOGSTASH_NAME} ]]; then
-      LOGSTASH_HOST=logstash
+if [[ -n ${LOGSTASH_HOST} ]]; then
+
+  declare have_logstash_ca
+  have_logstash_ca=0
+
+  if [[ -f /private/ssl/ca.pem ]]; then
+    cp /private/ssl/ca.pem /etc/logstash/ssl/ca.pem
+    have_logstash_ca=1
+  fi
+
+  if [[ ${have_logstash_ca} -eq 0 ]]; then
+
+
+    if [[ -n ${LOGSTASH_SSL_CA_URL} ]]; then
+      curl -R -L -o /etc/logstash/ssl/ca.pem "${LOGSTASH_SSL_CA_URL}"
+    else
+      openssl s_client -showcerts -connect "${LOGSTASH_HOST}:${LOGSTASH_PORT}" </dev/null 2>/dev/null | openssl x509 -outform PEM > /etc/logstash/ssl/ca.pem
     fi
-    LOGSTASH_PORT=${LOGSTASH_PORT:-5043}
-    openssl s_client -showcerts -connect "${LOGSTASH_HOST}:${LOGSTASH_PORT}" </dev/null 2>/dev/null | openssl x509 -outform PEM > /etc/logstash/ssl/ca.pem
+  fi
+
+  sed -i "s/##LOGSTASH_HOST##/$LOGSTASH_HOST/g" /etc/logstash-forwarder.conf
+  sed -i "s/##LOGSTASH_PORT##/$LOGSTASH_PORT/g" /etc/logstash-forwarder.conf
+  sed -i "s|##LOG_FILE_PATH##|$LOG_FILE_PATH|g" /etc/logstash-forwarder.conf
+  sed -i "s/##LOG_FILE_TYPE##/$LOG_FILE_TYPE/g" /etc/logstash-forwarder.conf
+
 fi
