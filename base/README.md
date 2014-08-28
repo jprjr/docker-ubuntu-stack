@@ -73,39 +73,55 @@ rules for your packages/programs.
 
 ### Logstash forwarder
 
-The logstash forwarder is disabled by default - if you have a service,
-and you'd like to use the logstash forwarder, you'll need to edit the
-`/etc/logstash-forwarder.conf` file and enable the service.
+The logstash forwarder is disabled by default. It has a simple config file
+for forwarding a single log file and giving it a `type` attribute.
+If you'd like to use that, it's pretty easy to get the logstash forwarder
+running. In your service's setup script, you can just:
 
-Here's an example from my nginx image:
+* add `LOG_FILE_PATH` and `LOG_FILE_TYPE` to `/etc/s6/logstash-forwarder/vars`
+* delete the `/etc/s6/logstash-forwarder/down` file
+* run `s6-svc -u /etc/s6/logstash-forwarder`
+
+I generally use `/private/<service>/vars` as a read-only mount - I don't
+want my containers polluting up your `/private` space, hence why I'm using
+`/etc/s6/logstash-forwarder`.
+
+If you want something more advanced (like multiple log files), make your
+own `logstash-forwarder.conf` file and make an environment variable named
+`LOGSTASH_FORWARDER_SKIP_SETUP` and set it to `1` (so it doesn't try to edit your config file).
+
+You'll also need to delete the `down` when you make your image, or you can delete
+the `down` file and run `s6-svc -u /etc/s6/logstash-forwarder` at run-time.
+
+Lastly, the logstash-forwarder requires you to setup an SSL CA file. There's
+two ways you can do this:
+
+* Have a file at `/private/ssl/ca.pem`
+* Declare the `LOGSTASH_SSL_CA_URL` environment variable, and it will be downloaded.
+
+If you don't do either of those things, then the setup script will just grab the
+certificate provided by your logstash container and use that as its certificate
+authority.
+
+Here's an example from my nginx image, for forwarding `/var/log/nginx/access.log`
 
 ```bash
-# First, check for 'LOGSTASH_HOST' or a link named 'logstash'
-declare LOGSTASH_HOST
+#!/usr/bin/env bash
+declare LOG_FILE_PATH
+declare LOG_FILE_TYPE
 
-LOGSTASH_HOST=${LOGSTASH_HOST:-}
-LOGSTASH_NAME=${LOGSTASH_NAME:-}
-
-if [[ -n ${LOGSTASH_NAME} ]]; then
-  LOGSTASH_HOST=logstash
+if [[ -f /private/nginx/vars ]]; then
+  source /private/nginx/vars
 fi
 
-if [[ -n ${LOGSTASH_HOST} ]]; then
+LOG_FILE_PATH=${LOG_FILE_PATH:-/var/log/nginx/*.log}
+LOG_FILE_TYPE=${LOG_FILE_TYPE:-nginx}
 
-  LOGSTASH_PORT=${LOGSTASH_PORT:-5043}
-  LOG_FILE_PATH="/var/log/nginx/*.log"
-  LOG_FILE_TYPE="nginx"
+echo "LOG_FILE_PATH=${LOG_FILE_PATH}" >> /etc/s6/logstash-forwarder/vars
+echo "LOG_FILE_TYPE=${LOG_FILE_TYPE}" >> /etc/s6/logstash-forwarder/vars
 
-  sed -i "s/##LOGSTASH_HOST##/$LOGSTASH_HOST/g" /etc/logstash-forwarder.conf
-  sed -i "s/##LOGSTASH_PORT##/$LOGSTASH_PORT/g" /etc/logstash-forwarder.conf
-  sed -i "s|##LOG_FILE_PATH##|$LOG_FILE_PATH|g" /etc/logstash-forwarder.conf
-  sed -i "s/##LOG_FILE_TYPE##/$LOG_FILE_TYPE/g" /etc/logstash-forwarder.conf
-
-  # remote the 'down' file for s6
-  rm /etc/s6/logstash-forwarder/down
-  # tell s6 to bring up the service
-  s6-svc -u /etc/s6/logstash-forwarder
-fi
+rm /etc/s6/logstash-forwarder/down
+s6-svc -u /etc/s6/logstash-forwarder
 ```
 
 ## Reference
@@ -116,6 +132,7 @@ Here's a list of links you can make, and what features that will turn on.
 
 * `syslog` - syslog messages will be forwarded via udp on port 514.
 * `rsyslog` - syslog messages will be forward via tcp port 2514 ([relp](http://www.rsyslog.com/doc/relp.html)).
+* `logstash` - the logstash forwarder will forward logs to this container on port 5043
 
 ### Environment variables
 

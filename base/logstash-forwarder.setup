@@ -7,9 +7,14 @@ declare LOG_FILE_PATH
 declare LOG_FILE_TYPE
 
 declare LOGSTASH_SSL_CA_URL
+declare LOGSTASH_FORWARDER_SKIP_SETUP
 
 if [[ -f /private/logstash-forwarder/vars ]]; then
   source /private/logstash-forwarder/vars
+fi
+
+if [[ -f /etc/s6/logstash-forwarder/vars ]]; then
+  source /etc/s6/logstash-forwarder/vars
 fi
 
 LOGSTASH_HOST=${LOGSTASH_HOST:-}
@@ -41,6 +46,10 @@ if [[ -n ${LOGSTASH_HOST} ]]; then
     else
       openssl s_client -showcerts -connect "${LOGSTASH_HOST}:${LOGSTASH_PORT}" </dev/null 2>/dev/null | openssl x509 -outform PEM > /etc/logstash/ssl/ca.pem
     fi
+  fi
+
+  if [[ ${LOGSTASH_FORWARDER_SKIP_SETUP} -eq 1 ]]; then
+    exit 0;
   fi
 
   sed -i "s/##LOGSTASH_HOST##/$LOGSTASH_HOST/g" /etc/logstash-forwarder.conf
