@@ -16,6 +16,9 @@ As usual, you can make a file at `/private/nodejs/vars` instead of declaring
 environment variables:
 
 * `NODEJS_SCRIPT` - the path to your NodeJS script
+  * Note: this will be run from the `/home/default` directory - your
+    path *must* be a relative path from that. If you use an absolute
+    path, `forever` will try to monitor the entire filesystem (and fail).
 * `NODEJS_SCRIPT_ARGS` - args to pass to your NodeJS script
 * `NODEJS_NO_AUTOREFRESH` - set this to `1` if you don't want the script to autorefresh on files changing.
 
@@ -42,6 +45,11 @@ not really do anything.
 Here's a handy cheat-sheet for installing a particular app - I'm going to use
 [Ghost](https://github.com/tryghost/Ghost) as an example:
 
+The important steps:
+
+* Set a default script to run in `/etc/s6/nodejs/vars`
+* Create patterns in ignore in `/home/default/.foreverignore`
+
 First, the Dockerfile
 
 ```
@@ -65,9 +73,14 @@ su -c 'cd /home/default unzip -uo ghost.zip -d ghost' \
    -s /bin/bash default
 su -c 'cd /home/default/ghost && npm install --production' \
    -s /bin/bash default
+cp /home/default/ghost/config.example.js /home/default/ghost/config.js
+sed -i 's/127.0.0.1/0.0.0.0/g' /home/default/ghost/config.js
+chown default:default /home/default/ghost/config.js
+
 apt-get remove -y g++ make git
 apt-get autoremove -y
 
-echo "NODEJS_SCRIPT=/home/default/ghost/index.js" >> /etc/s6/forever/vars
+echo "NODEJS_SCRIPT=ghost/index.js" >> /etc/s6/nodejs/vars
+echo "*.db" >> /home/default/.foreverignore
 ```
 
