@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+if [[ -f ./setup ]]; then
+  ./setup
+fi
+
 declare ELASTICSEARCH_SKIP_SETUP
 
 ES_USER=elasticsearch
