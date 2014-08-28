@@ -35,6 +35,17 @@ There's a few benefits to using s6:
 
 ## Concepts I use throughout my images
 
+### Common locations for popular files
+
+All my images will follow a few rules:
+
+1. Any needed SSL certs/keys will be copied from `/private/ssl` at runtime.
+  * `cert.pem`
+  * `key.pem`
+2. Any needed SSH keys will be copied from `/private/ssh` at runtime
+  * `authorized_keys`
+3. All service setup scripts will source `/private/<service>/vars` at runtime
+
 ### Link-driven options.
 
 One of my goals is to allow linking to other containers enable options on the fly. For example,
