@@ -48,7 +48,7 @@ Here's a handy cheat-sheet for installing a particular app - I'm going to use
 The important steps:
 
 * Set a default script to run in `/etc/s6/nodejs/vars`
-* Create patterns in ignore in `/home/default/.foreverignore`
+* Create patterns to ignore in `/home/default/.foreverignore`
 
 First, the Dockerfile
 
