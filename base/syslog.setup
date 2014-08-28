@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+
+declare SYSLOG_HOST
+declare SYSLOG_NAME
+
+declare RSYSLOG_HOST
+declare RSYSLOG_NAME
+
+declare SYSLOG_STDOUT
+
+declare SYSLOG_CLIENT_PORT
+declare SYSLOG_CLIENT_PROTOCOL
+
+declare RSYSLOG_CLIENT_PORT
+declare RSYSLOG_CLIENT_TLS
+
+declare SYSLOG_SERVER
+declare SYSLOG_SERVER_UDP
+declare SYSLOG_SERVER_TCP
+
+declare RSYSLOG_SERVER
+declare RSYSLOG_SERVER_PORT
+declare RSYSLOG_SERVER_TLS
+
+if [[ -f /private/syslog/vars ]]; then
+  source /private/syslog/vars
+fi
+
+SYSLOG_HOST=${SYSLOG_HOST:-}
+SYSLOG_NAME=${SYSLOG_NAME:-}
+
+RSYSLOG_HOST=${RSYSLOG_HOST:-}
+RSYSLOG_NAME=${RSYSLOG_NAME:-}
+
+SYSLOG_SERVER=${SYSLOG_SERVER:-0}
+RSYSLOG_SERVER=${RSYSLOG_SERVER:-0}
+
+if [[ -n ${SYSLOG_NAME} ]]; then
+    SYSLOG_HOST=syslog
+fi
+
+if [[ -n ${RSYSLOG_NAME} ]]; then
+    RSYSLOG_HOST=rsyslog
+fi
+
+if [[ -z ${SYSLOG_HOST} && -z ${RSYSLOG_HOST} ]]; then
+    SYSLOG_STDOUT=1
+fi
+
+if [[ ${SYSLOG_SERVER} -eq 1 ]]; then
+    SYSLOG_SERVER_TCP=${SYSLOG_SERVER_TCP:-514}
+    SYSLOG_SERVER_UDP=${SYSLOG_SERVER_UDP:-514}
+    if [[ $SYSLOG_SERVER_TCP -gt 0 ]]; then
+        echo "module(load=\"imtcp\")" >> /etc/rsyslog.conf
+        echo "input(type=\"imtcp\" port=\"${SYSLOG_SERVER_TCP}\")" >> /etc/rsyslog.conf
+    fi
+    if [[ $SYSLOG_SERVER_UDP -gt 0 ]]; then
+        echo "module(load=\"imudp\")" >> /etc/rsyslog.conf
+        echo "input(type=\"imudp\" port=\"${SYSLOG_SERVER_UDP}\")" >> /etc/rsyslog.conf
+    fi
+fi
+
+if [[ ${RSYSLOG_SERVER} -eq 1 ]]; then
+    RSYSLOG_SERVER_PORT=${RSYSLOG_SERVER_PORT:-2514}
+    RSYSLOG_SERVER_TLS=${RSYSLOG_SERVER_TLS:-off}
+    if [[ $RSYSLOG_SERVER_PORT -gt 0 ]]; then
+        echo "module(load=\"imrelp\")" >> /etc/rsyslog.conf
+        #echo "input(type=\"imrelp\" port=\"${RSYSLOG_SERVER_PORT}\" tls=\"${RSYSLOG_SERVER_TLS}\")" >> /etc/rsyslog.conf
+        echo "input(type=\"imrelp\" port=\"${RSYSLOG_SERVER_PORT}\")" >> /etc/rsyslog.conf
+    fi
+fi
+
+if [[ -n ${SYSLOG_HOST} ]]; then
+    SYSLOG_CLIENT_PORT=${SYSLOG_CLIENT_PORT:-514}
+    SYSLOG_CLIENT_PROTOCOL=${SYSLOG_CLIENT_PROTOCOL:-udp}
+    echo "action(type=\"omfwd\" Target=\"${SYSLOG_HOST}\" Port=\"${SYSLOG_CLIENT_PORT}\" Protocol=\"${SYSLOG_CLIENT_PROTOCOL}\" template=\"RSYSLOG_ForwardFormat\")" >> /etc/rsyslog.conf
+fi
+
+if [[ -n ${RSYSLOG_HOST} ]]; then
+    RSYSLOG_CLIENT_PORT=${RSYSLOG_CLIENT_PORT:-2514}
+    RSYSLOG_CLIENT_TLS=${RSYSLOG_CLIENT_TLS:-off}
+    echo "module(load=\"omrelp\")" >> /etc/rsyslog.conf
+    #echo "action(type=\"omrelp\" Target=\"${RSYSLOG_HOST}\" Port=\"${RSYSLOG_CLIENT_PORT}\" tls=\"${RSYSLOG_CLIENT_TLS}\")" >> /etc/rsyslog.conf
+    echo "action(type=\"omrelp\" Target=\"${RSYSLOG_HOST}\" Port=\"${RSYSLOG_CLIENT_PORT}\" template=\"RSYSLOG_ForwardFormat\")" >> /etc/rsyslog.conf
+fi
+
+if [[ $SYSLOG_STDOUT -eq 1 ]]; then
+    echo "action(type=\"omfile\" File=\"/dev/stdout\")" >> /etc/rsyslog.conf
+fi
