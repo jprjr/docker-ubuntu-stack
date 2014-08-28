@@ -15,4 +15,4 @@ if [[ ${NODEJS_NO_AUTOREFRESH} -eq 0 ]]; then
   FOREVER_ARGS="-w"
 fi
 
-s6-setuidgid default exec forever ${FOREVER_ARGS} "${NODEJS_SCRIPT}" $NODEJS_SCRIPT_ARGS
+s6-setuidgid default forever ${FOREVER_ARGS} "${NODEJS_SCRIPT}" $NODEJS_SCRIPT_ARGS

@@ -7,7 +7,8 @@ RUN DEBIAN_FRONTEND=noninteractive \
     apt-get update && \
     apt-get install -y nodejs python g++ make && \
     npm -g install forever && \
-    apt-get remove -y manpages manpages-dev g++ gcc cpp make software-properties-common unattended-upgrades ucf g++- gcc cpp && \
+    apt-get remove -y g++ gcc cpp make software-properties-common && \
+    apt-get autoremove -y && \
     useradd -m default
 
 COPY root /
