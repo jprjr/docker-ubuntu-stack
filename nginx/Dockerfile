@@ -8,17 +8,9 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get -y install nginx && \
     rm -rf /etc/nginx/conf.d/* && \
     rm -rf /srv/www/* && \
-    mkdir /etc/s6/nginx && \
-    ln -s /bin/true /etc/s6/nginx/finish && \
     userdel nginx
 
-ADD nginx.conf /etc/nginx/nginx.conf
-ADD nginx.run /etc/s6/nginx/run
-ADD nginx.setup /etc/s6/nginx/setup
-ADD nginx.logrotate /etc/logrotate.jprjr.d/nginx
-ADD default.conf /etc/nginx/conf.d/default.conf
-ADD index.html /srv/www/index.html
-ADD logstash-forwarder.conf /etc/logstash-forwarder.conf
+COPY root /
 
 RUN chmod 0644 /etc/logrotate.jprjr.d/nginx
 
