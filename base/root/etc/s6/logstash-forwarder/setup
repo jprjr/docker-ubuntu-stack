@@ -52,9 +52,6 @@ if [[ -n ${LOGSTASH_HOST} ]]; then
     exit 0;
   fi
 
-  sed -i "s/##LOGSTASH_HOST##/$LOGSTASH_HOST/g" /etc/logstash-forwarder.conf
-  sed -i "s/##LOGSTASH_PORT##/$LOGSTASH_PORT/g" /etc/logstash-forwarder.conf
-  sed -i "s|##LOG_FILE_PATH##|$LOG_FILE_PATH|g" /etc/logstash-forwarder.conf
-  sed -i "s/##LOG_FILE_TYPE##/$LOG_FILE_TYPE/g" /etc/logstash-forwarder.conf
+  envsubst < /etc/logstash-forwarder.conf.tmpl > /etc/logstash-forwarder.conf
 
 fi

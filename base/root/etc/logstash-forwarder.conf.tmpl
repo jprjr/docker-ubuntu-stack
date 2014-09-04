@@ -1,0 +1,12 @@
+{
+  "network" : {
+    "servers": [ "${LOGSTASH_HOST}:${LOGSTASH_PORT}" ],
+    "ssl ca": "/etc/logstash/ssl/ca.pem"
+  },
+  "files" : [
+    {
+      "paths": [ "${LOG_FILE_PATH}" ],
+      "fields": { "type" : "${LOG_FILE_TYPE}" }
+    }
+  ]
+}
