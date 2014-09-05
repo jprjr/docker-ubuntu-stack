@@ -7,14 +7,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get -y install mongodb-org
 
-RUN mkdir -p /etc/s6/mongodb && \
-    ln -s /bin/true /etc/s6/mongodb/finish && \
-    mkdir -p /srv/mongo/mongodb && \
-    touch /srv/mongo/mongodb/.dummy && \
-    chown -R mongodb /srv/mongo/mongodb
-
-ADD mongodb.run /etc/s6/mongodb/run
-ADD conf/mongod.conf /etc/mongod.conf
+COPY root /
 
 VOLUME ["/srv/mongo/mongodb"]
 

@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-if [[ -f ./setup ]]; then
-  ./setup
-fi
-
-exec /opt/logstash-forwarder/bin/logstash-forwarder -config /etc/logstash-forwarder.conf

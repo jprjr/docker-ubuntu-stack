@@ -140,6 +140,9 @@ Here's the complete list of environment variables you can set, and what they do.
 
 You can also set these variables by mounting a file at `/private/syslog/vars`
 
+* `RSYSLOG_SKIP_SETUP` - Setting this to one skips any and all setup of rsyslog - useful for using your own configuration via
+   volumes
+
 * `SYSLOG_HOST` - syslog messages will be forwarded via udp on port 514 to this host.
 * `RSYSLOG_HOST` - syslog messages will be forward via tcp port 2514 ([relp](http://www.rsyslog.com/doc/relp.html)) to this host.
   * In the case that you define a variable named `SYSLOG_HOST` / `RSYSLOG_HOST` *and* a link, the link will be used and
@@ -157,4 +160,5 @@ You can also set these variables by mounting a file at `/private/syslog/vars`
 * `RSYSLOG_SERVER` - enable the relp server, defaults to listening on port 2514 via tcp
 * `RSYSLOG_SERVER_PORT` - change the port for incoming relp traffic, or set to `0` to disable.
 
-* `SYSLOG_STDOUT` - force syslog messages to appear on stdout
+* `SYSLOG_STDOUT` - enable/disable syslog messages appearing on stdout by setting this to `1` or `0`.
+  Messages will appear on stdout unless you link to a `syslog` or `rsyslog` host.
