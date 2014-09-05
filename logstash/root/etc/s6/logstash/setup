@@ -22,7 +22,7 @@ if [[ -n $SKIP_LOGSTASH_SETUP ]]; then
 fi
 
 # Copy default config files over
-rsync -a /opt/logstash.default/ /etc/logstash/conf.d/
+rsync -a /opt/logstash-conf-default/ /etc/logstash/conf.d/
 
 # Check for SSL key/cert for Lumberjack
 declare cert_found
@@ -54,9 +54,8 @@ fi
 
 
 if [[ -n ${ELASTICSEARCH_HOST} ]]; then
-  cp /opt/logstash-confs/80-output-elasticsearch.conf /etc/logstash/conf.d
-  sed -i "s/##ELASTICSEARCH_HOST##/$ELASTICSEARCH_HOST/g"\
-    /etc/logstash/conf.d/80-output-elasticsearch.conf
+  envsubst < /opt/logstash-conf-opts/80-output-elasticsearch.conf.tmpl \
+           > /etc/logstash/conf.d/80-output-elasticsearch.conf
 fi
 
 MONGO_HOST=${MONGO_HOST:-}
@@ -67,21 +66,18 @@ fi
 
 
 if [[ -n ${MONGO_HOST} ]]; then
-  cp /opt/logstash-confs/80-output-mongo.conf /etc/logstash/conf.d
-  sed -i "s/##MONGO_HOST##/$MONGO_HOST/g"\
-    /etc/logstash/conf.d/80-output-mongo.conf
-  sed -i "s/##MONGO_DATABASE##/$MONGO_DATABASE/g"\
-    /etc/logstash/conf.d/80-output-mongo.conf
-  sed -i "s/##MONGO_COLLECTION##/$MONGO_COLLECTION/g"\
-    /etc/logstash/conf.d/80-output-mongo.conf
+  envsubst < /opt/logstash-conf-opts/80-output-mongo.conf.tmpl \
+           > /etc/logstash/conf.d/80-output-mongo.conf
 fi
 
 if [[ ${LOGSTASH_STDOUT} -eq 1 ]]; then
-  cp /opt/logstash-confs/80-output-stdout.conf /etc/logstash/conf.d
+  envsubst < /opt/logstash-conf-opts/80-output-stdout.conf.tmpl \
+           > /etc/logstash/conf.d/80-output-stdout.conf
 fi
 
 if [[ ${LOGSTASH_DEBUG} -eq 1 ]]; then
-  cp /opt/logstash-confs/99-output-debug.conf /etc/logstash/conf.d
+  envsubst < /opt/logstash-conf-opts/99-output-debug.conf.tmpl \
+           > /etc/logstash/conf.d/99-output-debug.conf
 fi
 
 chown -R logstash:logstash /etc/logstash
