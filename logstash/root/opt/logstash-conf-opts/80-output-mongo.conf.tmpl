@@ -1,0 +1,7 @@
+output {
+  mongodb {
+    uri => "mongodb://${MONGO_HOST}"
+    collection => "${MONGO_COLLECTION}"
+    database => "${MONGO_DATABASE}"
+  }
+}
