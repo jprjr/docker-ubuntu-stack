@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+declare NODEJS_SCRIPT
+declare NODEJS_SCRIPT_ARGS
+declare NODEJS_NO_AUTOREFRESH
+
+if [[ -f /private/nodejs/vars ]]; then
+  source /private/nodejs/vars
+fi
+
+if [[ -f /etc/s6/nodejs/vars ]]; then
+  source /etc/s6/nodejs/vars
+fi
+
+NODEJS_NO_AUTOREFRESH=${NODEJS_NO_AUTOREFRESH:-0}
+
+touch /home/default/.foreverignore && chown default /home/default/.foreverignore
+
+export NODEJS_SCRIPT NODEJS_SCRIPT_ARGS NODEJS_NO_AUTOREFRESH
