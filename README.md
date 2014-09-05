@@ -89,4 +89,4 @@ And those values will be used to build the configuration.
 1. I'm pretty sure s6 has the ability to do dependency management, but I haven't figured that out yet.
   * In practice, I don't see this being a problem. I usually place dependent services into their own containers anyway.
 2. s6 **requires** your process to not background. It doesn't have any forking detection like systemd/upstart does.
-
+  * There is a hacky way to handle forking programs, but it's hacky. I'm pretty sure anybody's "fork detection" code is pretty hacky, too
