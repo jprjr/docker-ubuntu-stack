@@ -54,7 +54,7 @@ fi
 
 
 if [[ -n ${ELASTICSEARCH_HOST} ]]; then
-  expose ELASTICSEARCH_HOST
+  export ELASTICSEARCH_HOST
   envsubst < /opt/logstash-conf-opts/80-output-elasticsearch.conf.tmpl \
            > /etc/logstash/conf.d/80-output-elasticsearch.conf
 fi
