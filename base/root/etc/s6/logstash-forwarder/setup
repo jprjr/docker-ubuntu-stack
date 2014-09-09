@@ -20,7 +20,7 @@ fi
 LOGSTASH_HOST=${LOGSTASH_HOST:-}
 LOGSTASH_NAME=${LOGSTASH_NAME:-}
 
-LOGSTASH_PORT=${LOGSTASH_PORT:-5043}
+LOGSTASH_TCP_PORT=${LOGSTASH_TCP_PORT:-5043}
 
 LOGSTASH_SSL_CA_URL=${LOGSTASH_SSL_CA_URL:-}
 
@@ -44,7 +44,7 @@ if [[ -n ${LOGSTASH_HOST} ]]; then
     if [[ -n ${LOGSTASH_SSL_CA_URL} ]]; then
       curl -R -L -o /etc/logstash/ssl/ca.pem "${LOGSTASH_SSL_CA_URL}"
     else
-      openssl s_client -showcerts -connect "${LOGSTASH_HOST}:${LOGSTASH_PORT}" </dev/null 2>/dev/null | openssl x509 -outform PEM > /etc/logstash/ssl/ca.pem
+      openssl s_client -showcerts -connect "${LOGSTASH_HOST}:${LOGSTASH_TCP_PORT}" </dev/null 2>/dev/null | openssl x509 -outform PEM > /etc/logstash/ssl/ca.pem
     fi
   fi
 
