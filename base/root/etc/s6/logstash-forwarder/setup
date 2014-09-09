@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 declare LOGSTASH_HOST
-declare LOGSTASH_PORT
+declare LOGSTASH_TCP_PORT
 
 declare LOG_FILE_PATH
 declare LOG_FILE_TYPE
@@ -51,7 +51,7 @@ if [[ -n ${LOGSTASH_HOST} ]]; then
   if [[ ${LOGSTASH_FORWARDER_SKIP_SETUP} -eq 1 ]]; then
     exit 0;
   fi
-
+  export LOGSTASH_HOST LOGSTASH_TCP_PORT LOG_FILE_PATH LOG_FILE_TYPE
   envsubst < /etc/logstash-forwarder.conf.tmpl > /etc/logstash-forwarder.conf
 
 fi
