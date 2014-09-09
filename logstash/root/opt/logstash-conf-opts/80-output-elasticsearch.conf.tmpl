@@ -1,6 +1,6 @@
 output {
   elasticsearch {
-    host => "##ELASTICSEARCH_HOST##"
+    host => "${ELASTICSEARCH_HOST}"
     protocol => "http"
   }
 }
