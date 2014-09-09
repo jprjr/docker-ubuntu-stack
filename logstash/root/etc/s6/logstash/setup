@@ -54,6 +54,7 @@ fi
 
 
 if [[ -n ${ELASTICSEARCH_HOST} ]]; then
+  expose ELASTICSEARCH_HOST
   envsubst < /opt/logstash-conf-opts/80-output-elasticsearch.conf.tmpl \
            > /etc/logstash/conf.d/80-output-elasticsearch.conf
 fi
@@ -66,6 +67,7 @@ fi
 
 
 if [[ -n ${MONGO_HOST} ]]; then
+  export MONGO_HOST MONGO_DATABASE MONGO_COLLECTION
   envsubst < /opt/logstash-conf-opts/80-output-mongo.conf.tmpl \
            > /etc/logstash/conf.d/80-output-mongo.conf
 fi
