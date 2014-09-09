@@ -3,4 +3,4 @@
 mkdir -p /var/lib/mongo/mongodb
 chown -R mongodb /var/lib/mongo/mongodb
 
-exec s6-setuidgid mongodb mongod --config /etc/mongod.conf
+exec s6-setuidgid mongodb mongod --config /etc/mongod.conf --smallfiles
