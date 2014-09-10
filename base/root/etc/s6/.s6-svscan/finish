@@ -1,1 +1,9 @@
-/bin/true
+#!/usr/bin/env bash
+
+# Make sure all service's 'finish' scripts get run
+# When s6 gets a TERM signal, it sends TERM to all processes
+# but seems to skip running their finish scripts
+
+for file in /etc/s6/*/finish; do
+  $file
+done
