@@ -7,12 +7,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get -y install elasticsearch default-jre-headless
 
-RUN mkdir -p /etc/s6/elasticsearch && \
-    ln -s /bin/true /etc/s6/elasticsearch/finish
-
-ADD elasticsearch.run /etc/s6/elasticsearch/run
-COPY conf /opt/elasticsearch.default
-
+COPY root /
  
 EXPOSE 9200
 EXPOSE 9300
