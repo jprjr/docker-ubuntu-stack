@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [[ ! -s /var/lib/mongo/mongodb/mongod.lock ]]; then
-  rm -rf /var/lib/mongo/mongodb/mongod.lock
+  rm --verbose /var/lib/mongo/mongodb/mongod.lock
 fi
 
 s6-svscanctl -t /etc/s6
