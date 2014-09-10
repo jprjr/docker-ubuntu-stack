@@ -8,7 +8,7 @@ if [[ -f /private/nginx/vars ]]; then
 fi
 
 LOG_FILE_PATH=${LOG_FILE_PATH:-/var/log/nginx/access.log}
-LOG_FILE_TYPE=${LOG_FILE_TYPE:-nginx}
+LOG_FILE_TYPE=${LOG_FILE_TYPE:-nginx-access}
 
 echo "LOG_FILE_PATH=${LOG_FILE_PATH}" >> /etc/s6/logstash-forwarder/vars
 echo "LOG_FILE_TYPE=${LOG_FILE_TYPE}" >> /etc/s6/logstash-forwarder/vars
