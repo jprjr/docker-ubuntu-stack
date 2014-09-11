@@ -44,7 +44,7 @@ WORK_DIR=/tmp/elasticsearch
 # Elasticsearch configuration directory
 CONF_DIR=/etc/elasticsearch
 
-rsync -a /opt/elasticsearch.default/ /etc/elasticsearch/
+cp /opt/elasticsearch.default/* /etc/elasticsearch/
 
 chown -R "$ES_USER":"$ES_GROUP" /etc/elasticsearch
 
