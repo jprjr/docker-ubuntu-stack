@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+declare LOG_FILE_PATH
+declare LOG_FILE_TYPE
+
+if [[ -f /private/nginx/vars ]]; then
+  source /private/nginx/vars
+fi
+
+LOG_FILE_PATH=${LOG_FILE_PATH:-/var/log/nginx/access.log}
+LOG_FILE_TYPE=${LOG_FILE_TYPE:-nginx-access}
+
+echo "LOG_FILE_PATH=${LOG_FILE_PATH}" >> /etc/s6/logstash-forwarder/vars
+echo "LOG_FILE_TYPE=${LOG_FILE_TYPE}" >> /etc/s6/logstash-forwarder/vars
+
+rm /etc/s6/logstash-forwarder/down
+s6-svc -u /etc/s6/logstash-forwarder
+
+declare LDAP_HOST
+declare LDAP_TCP_PORT
+
+declare ELASTICSEARCH_HOST
+declare ELASTICSEARCH_TCP_PORT
+
+declare LDAP_SEARCH_DN
+declare LDAP_UID_ATTR
+declare LDAP_SEARCH_SCOPE
+declare LDAP_SEARCH_FILTER
+declare LDAP_BIND_USERNAME
+declare LDAP_BIND_PASSWORD
+
+LDAP_HOST=${LDAP_HOST:-}
+LDAP_NAME=${LDAP_NAME:-}
+
+if [[ -n "${LDAP_NAME}" ]]; then
+  LDAP_HOST=ldap
+fi
+
+ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST:-}
+ELASTICSEARCH_NAME=${ELASTICSEARCH_NAME:-}
+
+if [[ -n "${ELASTICSEARCH_NAME}" ]]; then
+  ELASTICSEARCH_HOST=elasticsearch
+fi
+
+LDAP_TCP_PORT=${LDAP_TCP_PORT:-389}
+ELASTICSEARCH_TCP_PORT=${ELASTICSEARCH_TCP_PORT:-9200}
+
+export LDAP_HOST LDAP_TCP_PORT ELASTICSEARCH_HOST ELASTICSEARCH_TCP_PORT LDAP_SEARCH_DN LDAP_UID_ATTR LDAP_SEARCH_SCOPE LDAP_SEARCH_FILTER LDAP_BIND_USERNAME LDAP_BIND_PASSWORD
+envsubst < /etc/nginx/conf.d/default.conf.tmpl > /etc/nginx/conf.d/default.conf
