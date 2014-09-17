@@ -8,4 +8,3 @@ RUN cd /tmp && \
     sed -i 's/9200/80/' /var/www/config.js && \
     rm -rf /tmp/kibana-3.1.0*
 
-COPY root /
