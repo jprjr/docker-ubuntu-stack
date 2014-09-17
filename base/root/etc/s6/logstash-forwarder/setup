@@ -54,4 +54,7 @@ if [[ -n ${LOGSTASH_HOST} ]]; then
   export LOGSTASH_HOST LOGSTASH_TCP_PORT LOG_FILE_PATH LOG_FILE_TYPE
   envsubst < /etc/logstash-forwarder.conf.tmpl > /etc/logstash-forwarder.conf
 
+else
+    touch down
+    s6-svc -d /etc/s6/logstash-forwarder
 fi
