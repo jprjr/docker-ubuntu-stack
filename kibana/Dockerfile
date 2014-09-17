@@ -1,4 +1,4 @@
-FROM jprjr/ubuntu-nginx:14.04
+FROM jprjr/ubuntu-apache:14.04
 MAINTAINER John Regan <john@jrjrtech.com>
 
 RUN cd /tmp && \
