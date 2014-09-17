@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+if [[ -f ./setup ]]; then
+  ./setup
+fi
+
+source /etc/apache2/envvars
+
+exec apache2ctl -D FOREGROUND

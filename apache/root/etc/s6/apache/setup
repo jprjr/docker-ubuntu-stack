@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+declare APACHE_SKIP_SETUP
+declare LOG_FILE_PATH
+declare LOG_FILE_TYPE
+
+if [[ -f /private/apache/vars ]]; then
+  source /private/apache/vars
+fi
+
+LOG_FILE_PATH=${LOG_FILE_PATH:-/var/log/apache2/access.log}
+LOG_FILE_TYPE=${LOG_FILE_TYPE:-apache-access}
+
+echo "LOG_FILE_PATH=${LOG_FILE_PATH}" >> /etc/s6/logstash-forwarder/vars
+echo "LOG_FILE_TYPE=${LOG_FILE_TYPE}" >> /etc/s6/logstash-forwarder/vars
+
+rm /etc/s6/logstash-forwarder/down
+s6-svc -u /etc/s6/logstash-forwarder
+
+APACHE_SKIP_SETUP=${APACHE_SKIP_SETUP:-0}
+
+if [[ ${APACHE_SKIP_SETUP} -gt 0 ]]; then
+    exit 0
+fi
+
+
+mkdir -p /etc/apache2
+cp -a /opt/apache2-defaults/* /etc/apache2/
+
