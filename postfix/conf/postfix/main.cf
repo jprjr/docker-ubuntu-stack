@@ -55,6 +55,6 @@ smtpd_sasl_type = dovecot
 smtpd_sasl_auth_enable=yes
 
 virtual_mailbox_domains=mysql:/etc/postfix/virtual-mailbox-domains.cf
-virtual_mailbox_maps=myysql:/etc/postfix/virtual-mailbox-maps.cf
+virtual_mailbox_maps=mysql:/etc/postfix/virtual-mailbox-maps.cf
 virtual_alias_maps=mysql:/etc/postfix/virtual-alias-maps.cf
 local_recipient_maps=$virtual_mailbox_maps
