@@ -13,4 +13,6 @@ if [[ ${NODEJS_NO_AUTOREFRESH} -eq 0 ]]; then
   FOREVER_ARGS="-w"
 fi
 
+export HOME
+export NODE_PATH
 /opt/execline/bin/cd /home/default s6-setuidgid default forever ${FOREVER_ARGS} "${NODEJS_SCRIPT}" $NODEJS_SCRIPT_ARGS
