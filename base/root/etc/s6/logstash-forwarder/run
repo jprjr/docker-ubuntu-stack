@@ -4,4 +4,4 @@ if [[ -f ./setup ]]; then
   ./setup
 fi
 
-exec /opt/logstash-forwarder/bin/logstash-forwarder -config /etc/logstash-forwarder.conf
+exec /opt/logstash-forwarder/bin/logstash-forwarder -config /etc/logstash-forwarder.conf > /dev/null 2>/dev/null
